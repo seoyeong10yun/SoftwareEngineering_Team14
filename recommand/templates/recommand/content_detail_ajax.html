@@ -1,0 +1,7 @@
+<h1>{{ content.title }}</h1>
+{% comment %} {% if content.contentimage %}
+    <img src="{{ content.contentimage.url }}" alt="{{ content.title }}" style="max-width: 100%;">
+{% endif %} {% endcomment %}
+<p><strong>Genre:</strong> {{ content.genre }}</p>
+<p><strong>Director:</strong> {{ content.director }}</p>
+<p>{{ content.description }}</p>
