@@ -28,19 +28,14 @@ class WatchHistory(models.Model):
     def __str__(self):
         return f"{self.user.username} - {self.content.title}"
 
-class FavoriteContent(models.Model):
+# 좋아요한 콘텐츠 테이블
+class LikeContent(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     content = models.ForeignKey(Content, on_delete=models.CASCADE)
-    added_date = models.DateTimeField()
+    timestamp = models.DateTimeField(auto_now_add=True)
 
-    def __str__(self):
-        return f"{self.user.username} - {self.content.title}"
-
-class LikeDislike(models.Model):
+# 싫어요한 콘텐츠 테이블
+class DislikeContent(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     content = models.ForeignKey(Content, on_delete=models.CASCADE)
-    like = models.BooleanField()
-    timestamp = models.DateTimeField()
-
-    def __str__(self):
-        return f"{self.user.username} - {self.content.title} - {'Like' if self.like else 'Dislike'}"
+    timestamp = models.DateTimeField(auto_now_add=True)
