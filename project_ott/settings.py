@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'ott_recommend.apps.OttRecommendConfig',
+    'loader', #데이터를 db에 추가하기 위한 앱
     'api',
     'rest_framework'
 ]
