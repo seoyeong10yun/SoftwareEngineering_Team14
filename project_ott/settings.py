@@ -38,7 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'ott_recommend.apps.OttRecommendConfig',
-    'loader',
+    'loader', #데이터를 db에 추가하기 위한 앱
 ]
 
 MIDDLEWARE = [
