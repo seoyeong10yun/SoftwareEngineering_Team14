@@ -19,6 +19,5 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('accounts/',include('login.urls')),
-    path('recommand/',include('recommand.urls')),
+    # path('', include('ott_recommend.urls')),
 ]
