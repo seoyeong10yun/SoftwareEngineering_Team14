@@ -13,7 +13,7 @@ class ContentDetail(APIView):
         model = Content.objects.get(id=content_id)
         serializer = ContentSerializer(model)
         return Response(serializer.data)
-    
+
 class UserList(APIView):
     def get(self, request):
         model = User.objects.all()
