@@ -3,6 +3,7 @@ from rest_framework import serializers
 from .models import Item
 from ott_recommend.models import Content
 from django.contrib.auth.models import User
+from django.contrib.auth import authenticate
 
 class ItemSerializer(serializers.ModelSerializer):
     class Meta:
@@ -43,3 +44,18 @@ class SignUpSerializer(serializers.ModelSerializer):
             password=validated_data['password1'],
         )
         return user
+
+# 유저 로그인용
+class LoginSerializer(serializers.ModelSerializer):
+    username = serializers.CharField(required=True)
+    password = serializers.CharField(required=True, write_only=True)
+
+    class Meta:
+        model = User
+        fields = ('username', 'password')
+
+    def validate(self, data):
+        user = authenticate(username=data['username'], password=data['password'])
+        if user and user.is_active:
+            return user
+        raise serializers.ValidationError("Invaild credentials")

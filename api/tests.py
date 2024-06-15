@@ -31,3 +31,40 @@ class SignUpTestCase(TestCase):
     # 즉 테스트가 완료되면 해당 유저는 DB에서 자동으로 삭제됨.
     def testDown(self):
         pass
+
+class LoginTestCase(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        self.login_url = reverse('login')
+        # 임의의 유저 생성
+        self.user = User.objects.create_user(
+            username='logintestuser',
+            password='logintestpassword',
+        )
+
+    def test_user_login(self):
+        login_data = {
+            'username' : 'logintestuser',
+            'password' : 'logintestpassword',
+        }
+        response = self.client.post(self.login_url, login_data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn('token', response.data)
+
+    def tets_login_wrong_password(self):
+        login_data = {
+            'username' : 'logintestuser',
+            'password' : 'wrongpassword',
+        }
+        response = self.client.post(self.login_url, login_data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertNotIn('token', response.data)
+
+    def test_login_nonexist_user(self):
+        login_data = {
+            'username' : 'nonexistuser',
+            'password' : 'testpassword',
+        }
+        response = self.client.post(self.login_url, login_data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertNotIn('token', response.data)
