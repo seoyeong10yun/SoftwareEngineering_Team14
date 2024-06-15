@@ -1,3 +1,6 @@
 # Ignore database file
 #db.sqlite3
 #db공유를 위해 주석처리 하겠습니다
+
+*.pyc
+#컴파일 된 파일이기 때문에 병합 무시
