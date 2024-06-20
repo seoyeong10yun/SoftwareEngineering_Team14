@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from .models import Item
-from ott_recommend.models import Content, WatchHistory
+from ott_recommend.models import Content, WatchHistory, LikeContent, DislikeContent
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 
@@ -66,4 +66,16 @@ from ott_recommend.models import WatchHistory
 class WatchHistorySerializer(serializers.ModelSerializer):
     class Meta:
         model = WatchHistory
+        fields = '__all__'
+
+#좋아요한 컨텐츠
+class LikeContentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = LikeContent
+        fields = '__all__'
+
+#싫어요한 컨텐츠
+class DislikeContentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DislikeContent
         fields = '__all__'
