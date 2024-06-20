@@ -3,6 +3,8 @@ from rest_framework.test import APIClient
 from rest_framework import status
 from django.urls import reverse
 from django.contrib.auth.models import User
+from ott_recommend.models import Content, WatchHistory
+from django.utils import timezone
 # Create your tests here.
 
 class SignUpTestCase(TestCase):
@@ -68,3 +70,75 @@ class LoginTestCase(TestCase):
         response = self.client.post(self.login_url, login_data, format='json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertNotIn('token', response.data)
+
+#시청기록조회 테스트
+class WatchHistoryAPITest(TestCase):
+    def setUp(self):
+        # 유저 생성
+        self.user = User.objects.create_user(username='testuser', password='testpassword')
+        self.client = APIClient()
+        
+        # 유저 인증 후 토큰 획득
+        response = self.client.post('/api/login/', {'username': 'testuser', 'password': 'testpassword'}, format='json')
+        self.token = response.data['token']
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token)
+
+        # 임시 테스트 콘텐츠 생성
+        self.content1 = Content.objects.create(
+            title='Test Content 1',
+            genre='Drama',
+            release_date='2023-01-01',
+            rating='PG',
+            description='Test Description 1'
+        )
+        self.content2 = Content.objects.create(
+            title='Test Content 2',
+            genre='Comedy',
+            release_date='2023-01-02',
+            rating='PG-13',
+            description='Test Description 2'
+        )
+
+    def test_add_watch_history(self):
+        response1 = self.client.post('/api/add_watch_history/', {
+            'content_id': self.content1.id,
+            'watch_duration': 120
+        }, format='json')
+        self.assertEqual(response1.status_code, 201)
+        self.assertEqual(response1.data['content'], self.content1.id)
+        self.assertEqual(response1.data['watch_duration'], 120)
+        
+        response2 = self.client.post('/api/add_watch_history/', {
+            'content_id': self.content2.id,
+            'watch_duration': 90
+        }, format='json')
+        self.assertEqual(response2.status_code, 201)
+        self.assertEqual(response2.data['content'], self.content2.id)
+        self.assertEqual(response2.data['watch_duration'], 90)
+
+    def test_watch_history_list(self):
+        response = self.client.get('/api/watch_history/')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data), 0)
+
+        self.client.post('/api/add_watch_history/', {
+            'content_id': self.content1.id,
+            'watch_duration': 120
+        }, format='json')
+        self.client.post('/api/add_watch_history/', {
+            'content_id': self.content2.id,
+            'watch_duration': 90
+        }, format='json')
+
+        response = self.client.get('/api/watch_history/')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data), 2)
+        self.assertEqual(response.data[0]['content'], self.content1.id)
+        self.assertEqual(response.data[1]['content'], self.content2.id)
+
+    def tearDown(self):
+        # 임시로 만들어준 테스트 항목들 삭제
+        WatchHistory.objects.filter(user=self.user).delete()
+        self.content1.delete()
+        self.content2.delete()
+        self.user.delete()
