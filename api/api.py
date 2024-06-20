@@ -6,6 +6,7 @@ from rest_framework.authtoken.models import Token
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.decorators import authentication_classes, permission_classes
+from django.utils import timezone
 
 # 콘텐츠 리스트를 보여주는 apiview
 class ContentListView(APIView):
@@ -50,3 +51,40 @@ class LoginView(APIView):
             token, created = Token.objects.get_or_create(user=user)
             return Response({'token': token.key}, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+# 유저의 시청기록 조회를 위한 apiview
+@permission_classes([IsAuthenticated])
+@authentication_classes([TokenAuthentication])
+class WatchHistoryView(APIView):
+    def get(self, request):
+        user = request.user
+        watch_history = WatchHistory.objects.filter(user=user)
+        serializer = WatchHistorySerializer(watch_history, many=True)
+        return Response(serializer.data)
+    
+# 사용자가 콘텐츠를 시청할 때 호출되는 api
+@permission_classes([IsAuthenticated])
+@authentication_classes([TokenAuthentication])
+class AddWatchHistoryView(APIView):
+    def post(self, request):
+        user = request.user
+        content_id = request.data.get('content_id')
+        watch_duration = request.data.get('watch_duration')
+
+        if not content_id or not watch_duration:
+            return Response({'error': 'Content ID and watch duration are required'}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            content = Content.objects.get(id=content_id)
+        except Content.DoesNotExist:
+            return Response({'error': 'Content not found'}, status=status.HTTP_404_NOT_FOUND)
+
+        watch_history = WatchHistory.objects.create(
+            user=user,
+            content=content,
+            watch_date=timezone.now(),
+            watch_duration=watch_duration
+        )
+
+        serializer = WatchHistorySerializer(watch_history)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)

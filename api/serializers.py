@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from .models import Item
-from ott_recommend.models import Content
+from ott_recommend.models import Content, WatchHistory
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 
@@ -59,3 +59,11 @@ class LoginSerializer(serializers.ModelSerializer):
         if user and user.is_active:
             return user
         raise serializers.ValidationError("Invaild credentials")
+    
+#시청 기록 조회용
+from ott_recommend.models import WatchHistory
+
+class WatchHistorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = WatchHistory
+        fields = '__all__'
