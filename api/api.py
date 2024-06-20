@@ -8,6 +8,8 @@ from rest_framework.authentication import TokenAuthentication
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.decorators import authentication_classes, permission_classes
 from django.utils import timezone
+from django.db.models import Q
+
 
 # 콘텐츠 리스트를 보여주는 apiview
 class ContentListView(APIView):
@@ -140,3 +142,27 @@ class DislikeContentView(APIView):
 
         serializer = DislikeContentSerializer(dislike)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+    
+# 검색 기능을 수행하는 APIView
+class ContentSearchView(APIView):
+    def get(self, request):
+        tag = request.query_params.get('tag')
+        query = request.query_params.get('query')
+        
+        if not tag or not query:
+            return Response({'error': 'Tag and query parameters are required'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        filters = {
+            'genre': Q(genre__icontains=query),
+            'director': Q(director__icontains=query),
+            'title': Q(title__icontains=query),
+            'cast': Q(cast__icontains=query),
+            'country': Q(country__icontains=query),
+        }
+        
+        if tag not in filters:
+            return Response({'error': 'Invalid tag'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        contents = Content.objects.filter(filters[tag])
+        serializer = ContentSerializer(contents, many=True)
+        return Response(serializer.data)

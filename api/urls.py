@@ -18,4 +18,5 @@ urlpatterns = [
     path('add_watch_history/', AddWatchHistoryView.as_view(), name='add_watch_history'),
     path('like_content/', LikeContentView.as_view(), name='like_content'),
     path('dislike_content/', DislikeContentView.as_view(), name='dislike_content'),
+    path('search/', ContentSearchView.as_view(), name='content_search'),
 ]

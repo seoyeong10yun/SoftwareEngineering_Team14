@@ -7,6 +7,18 @@
 </head>
 <body>
     <h1>Welcome to Home</h1>
+
+    <h2>Search Content</h2>
+    <select id="search-tag">
+        <option value="genre">Genre</option>
+        <option value="director">Director</option>
+        <option value="title">Title</option>
+        <option value="cast">Cast</option>
+        <option value="country">Country</option>
+    </select>
+    <input type="text" id="search-query" placeholder="Enter search query">
+    <button onclick="searchContent()">Search</button>
+
     <h2>Content List</h2>
     <ul id="content-list"></ul>
     <button id="prev-page" disabled>Previous</button>
@@ -68,6 +80,31 @@
                     li.textContent = `${record.content.title} - Watched on: ${new Date(record.watch_date).toLocaleDateString()}`;
                     watchHistory.appendChild(li);
                 });
+            });
+        }
+
+        function searchContent() {
+            const tag = document.getElementById('search-tag').value;
+            const query = document.getElementById('search-query').value;
+
+            fetch(`/api/search/?tag=${tag}&query=${query}`, {
+                headers: {
+                    'Authorization': `Token ${token}`,
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                const contentList = document.getElementById('content-list');
+                contentList.innerHTML = ''; // Clear existing content
+                data.forEach(content => {
+                    const li = document.createElement('li');
+                    li.textContent = content.title;
+                    li.onclick = () => window.location.href = `/content/${content.id}/`;
+                    contentList.appendChild(li);
+                });
+            })
+            .catch(error => {
+                console.error('Error searching content:', error);
             });
         }
 
