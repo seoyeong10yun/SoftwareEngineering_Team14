@@ -5,15 +5,19 @@ from rest_framework import status
 from rest_framework.authtoken.models import Token
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.authentication import TokenAuthentication
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.decorators import authentication_classes, permission_classes
 from django.utils import timezone
 
 # 콘텐츠 리스트를 보여주는 apiview
 class ContentListView(APIView):
     def get(self, request):
-        model = Content.objects.all()
-        serializer = ContentSerializer(model, many=True)
-        return Response(serializer.data)
+        paginator = PageNumberPagination()
+        paginator.page_size = 10
+        contents = Content.objects.all()
+        result_page = paginator.paginate_queryset(contents, request)
+        serializer = ContentSerializer(result_page, many=True)
+        return paginator.get_paginated_response(serializer.data)
 
 # 특정 콘텐츠 세부 정보를 보여주는 apiview
 class ContentDetailView(APIView):

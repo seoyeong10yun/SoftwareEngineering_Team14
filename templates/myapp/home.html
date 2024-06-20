@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+</head>
+<body>
+    <h1>Welcome to Home</h1>
+    <h2>Content List</h2>
+    <ul id="content-list"></ul>
+    <button id="prev-page" disabled>Previous</button>
+    <button id="next-page" disabled>Next</button>
+
+    <h2>Your Watch History</h2>
+    <ul id="watch-history"></ul>
+
+    <script>
+        const token = localStorage.getItem('token');
+        let currentPage = 1;
+
+        function loadContentList(page) {
+            fetch(`/api/content_list/?page=${page}`, {
+                headers: {
+                    'Authorization': `Token ${token}`,
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                const contentList = document.getElementById('content-list');
+                contentList.innerHTML = ''; // Clear existing content
+                data.results.forEach(content => {
+                    const li = document.createElement('li');
+                    li.textContent = content.title;
+                    li.onclick = () => window.location.href = `/content/${content.id}/`;
+                    contentList.appendChild(li);
+                });
+
+                document.getElementById('prev-page').disabled = !data.previous;
+                document.getElementById('next-page').disabled = !data.next;
+            });
+        }
+
+        document.getElementById('prev-page').onclick = () => {
+            if (currentPage > 1) {
+                currentPage--;
+                loadContentList(currentPage);
+            }
+        };
+
+        document.getElementById('next-page').onclick = () => {
+            currentPage++;
+            loadContentList(currentPage);
+        };
+
+        function loadWatchHistory() {
+            fetch('/api/watch_history/', {
+                headers: {
+                    'Authorization': `Token ${token}`,
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                const watchHistory = document.getElementById('watch-history');
+                watchHistory.innerHTML = ''; // Clear existing content
+                data.forEach(record => {
+                    const li = document.createElement('li');
+                    li.textContent = `${record.content.title} - Watched on: ${new Date(record.watch_date).toLocaleDateString()} - Duration: ${record.watch_duration} minutes`;
+                    watchHistory.appendChild(li);
+                });
+            });
+        }
+
+        // Initial load
+        loadContentList(currentPage);
+        loadWatchHistory();
+    </script>
+</body>
+</html>

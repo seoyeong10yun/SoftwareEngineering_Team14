@@ -62,6 +62,8 @@ class LoginSerializer(serializers.ModelSerializer):
     
 #시청 기록 조회용
 class WatchHistorySerializer(serializers.ModelSerializer):
+    content = ContentSerializer(read_only=True)  # ContentSerializer를 사용하여 content 필드를 직렬화
+
     class Meta:
         model = WatchHistory
         fields = '__all__'
