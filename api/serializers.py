@@ -61,8 +61,6 @@ class LoginSerializer(serializers.ModelSerializer):
         raise serializers.ValidationError("Invaild credentials")
     
 #시청 기록 조회용
-from ott_recommend.models import WatchHistory
-
 class WatchHistorySerializer(serializers.ModelSerializer):
     class Meta:
         model = WatchHistory

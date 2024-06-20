@@ -16,4 +16,6 @@ urlpatterns = [
     path('login/', LoginView.as_view(), name='login'),
     path('watch_history/', WatchHistoryView.as_view(), name='watch_history'),
     path('add_watch_history/', AddWatchHistoryView.as_view(), name='add_watch_history'),
+    path('like_content/', LikeContentView.as_view(), name='like_content'),
+    path('dislike_content/', DislikeContentView.as_view(), name='dislike_content'),
 ]
