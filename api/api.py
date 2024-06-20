@@ -88,3 +88,49 @@ class AddWatchHistoryView(APIView):
 
         serializer = WatchHistorySerializer(watch_history)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+    
+# 좋아요 기능을 수행하는 APIView
+@permission_classes([IsAuthenticated])
+@authentication_classes([TokenAuthentication])
+class LikeContentView(APIView):
+    def post(self, request):
+        user = request.user
+        content_id = request.data.get('content_id')
+
+        if not content_id:
+            return Response({'error': 'Content ID is required'}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            content = Content.objects.get(id=content_id)
+        except Content.DoesNotExist:
+            return Response({'error': 'Content not found'}, status=status.HTTP_404_NOT_FOUND)
+
+        like, created = LikeContent.objects.get_or_create(user=user, content=content)
+        if not created:
+            return Response({'message': 'Content already liked'}, status=status.HTTP_200_OK)
+
+        serializer = LikeContentSerializer(like)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+# 싫어요 기능을 수행하는 APIView
+@permission_classes([IsAuthenticated])
+@authentication_classes([TokenAuthentication])
+class DislikeContentView(APIView):
+    def post(self, request):
+        user = request.user
+        content_id = request.data.get('content_id')
+
+        if not content_id:
+            return Response({'error': 'Content ID is required'}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            content = Content.objects.get(id=content_id)
+        except Content.DoesNotExist:
+            return Response({'error': 'Content not found'}, status=status.HTTP_404_NOT_FOUND)
+
+        dislike, created = DislikeContent.objects.get_or_create(user=user, content=content)
+        if not created:
+            return Response({'message': 'Content already disliked'}, status=status.HTTP_200_OK)
+
+        serializer = DislikeContentSerializer(dislike)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)

@@ -3,7 +3,7 @@ from rest_framework.test import APIClient
 from rest_framework import status
 from django.urls import reverse
 from django.contrib.auth.models import User
-from ott_recommend.models import Content, WatchHistory
+from ott_recommend.models import Content, WatchHistory, LikeContent, DislikeContent
 from django.utils import timezone
 # Create your tests here.
 
@@ -139,6 +139,58 @@ class WatchHistoryAPITest(TestCase):
     def tearDown(self):
         # 임시로 만들어준 테스트 항목들 삭제
         WatchHistory.objects.filter(user=self.user).delete()
+        self.content1.delete()
+        self.content2.delete()
+        self.user.delete()
+
+#좋아요/싫어요 테스트
+class ContentInteractionAPITest(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(username='testuser', password='testpassword')
+        self.client = APIClient()
+
+        response = self.client.post('/api/login/', {'username': 'testuser', 'password': 'testpassword'}, format='json')
+        self.token = response.data['token']
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token)
+
+        self.content1 = Content.objects.create(
+            title='Test Content 1',
+            genre='Drama',
+            release_date='2023-01-01',
+            rating='PG',
+            description='Test Description 1'
+        )
+        self.content2 = Content.objects.create(
+            title='Test Content 2',
+            genre='Comedy',
+            release_date='2023-01-02',
+            rating='PG-13',
+            description='Test Description 2'
+        )
+
+    def test_like_content(self):
+        response = self.client.post('/api/like_content/', {'content_id': self.content1.id}, format='json')
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.data['content'], self.content1.id)
+        self.assertEqual(response.data['user'], self.user.id)
+
+        response = self.client.post('/api/like_content/', {'content_id': self.content1.id}, format='json')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data['message'], 'Content already liked')
+
+    def test_dislike_content(self):
+        response = self.client.post('/api/dislike_content/', {'content_id': self.content2.id}, format='json')
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.data['content'], self.content2.id)
+        self.assertEqual(response.data['user'], self.user.id)
+
+        response = self.client.post('/api/dislike_content/', {'content_id': self.content2.id}, format='json')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data['message'], 'Content already disliked')
+
+    def tearDown(self):
+        LikeContent.objects.filter(user=self.user).delete()
+        DislikeContent.objects.filter(user=self.user).delete()
         self.content1.delete()
         self.content2.delete()
         self.user.delete()
