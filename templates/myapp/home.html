@@ -65,7 +65,7 @@
                 watchHistory.innerHTML = ''; // Clear existing content
                 data.forEach(record => {
                     const li = document.createElement('li');
-                    li.textContent = `${record.content.title} - Watched on: ${new Date(record.watch_date).toLocaleDateString()} - Duration: ${record.watch_duration} minutes`;
+                    li.textContent = `${record.content.title} - Watched on: ${new Date(record.watch_date).toLocaleDateString()}`;
                     watchHistory.appendChild(li);
                 });
             });

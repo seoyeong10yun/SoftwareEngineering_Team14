@@ -68,18 +68,24 @@
         };
 
         document.getElementById('watch-button').onclick = () => {
-            const watchDuration = prompt('Enter watch duration (minutes):');
             fetch('/api/add_watch_history/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Token ${token}`,
                 },
-                body: JSON.stringify({content_id: contentId, watch_duration: watchDuration}),
+                body: JSON.stringify({content_id: contentId}),
             })
             .then(response => response.json())
             .then(data => {
-                alert('Watch history added!');
+                if (data.error) {
+                    alert(data.error);
+                } else {
+                    alert('Watch history added!');
+                }
+            })
+            .catch(error => {
+                console.error('Error adding to watch history:', error);
             });
         };
     </script>

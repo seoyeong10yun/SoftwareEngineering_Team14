@@ -73,21 +73,23 @@ class AddWatchHistoryView(APIView):
     def post(self, request):
         user = request.user
         content_id = request.data.get('content_id')
-        watch_duration = request.data.get('watch_duration')
 
-        if not content_id or not watch_duration:
-            return Response({'error': 'Content ID and watch duration are required'}, status=status.HTTP_400_BAD_REQUEST)
+        if not content_id:
+            return Response({'error': 'Content ID is required'}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
             content = Content.objects.get(id=content_id)
         except Content.DoesNotExist:
             return Response({'error': 'Content not found'}, status=status.HTTP_404_NOT_FOUND)
 
+        if WatchHistory.objects.filter(user=user, content=content).exists():
+            return Response({'error': 'This content is already in your watch history'}, status=status.HTTP_400_BAD_REQUEST)
+
         watch_history = WatchHistory.objects.create(
             user=user,
             content=content,
             watch_date=timezone.now(),
-            watch_duration=watch_duration
+            watch_duration=0  # Default duration
         )
 
         serializer = WatchHistorySerializer(watch_history)

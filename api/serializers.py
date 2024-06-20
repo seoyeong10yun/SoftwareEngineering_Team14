@@ -66,7 +66,7 @@ class WatchHistorySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = WatchHistory
-        fields = '__all__'
+        fields = ['id', 'user', 'content', 'watch_date']  # 'watch_duration'을 제외
 
 #좋아요한 컨텐츠
 class LikeContentSerializer(serializers.ModelSerializer):
