@@ -5,8 +5,10 @@ from django.urls import reverse
 from django.contrib.auth.models import User
 from ott_recommend.models import Content, WatchHistory, LikeContent, DislikeContent
 from django.utils import timezone
+from rest_framework.authtoken.models import Token
 # Create your tests here.
 
+# 회원가입 테스트
 class SignUpTestCase(TestCase):
     # 테스트 전 초기화
     def setUp(self):
@@ -34,6 +36,7 @@ class SignUpTestCase(TestCase):
     def testDown(self):
         pass
 
+# 로그인 테스트
 class LoginTestCase(TestCase):
     def setUp(self):
         self.client = APIClient()
@@ -50,10 +53,11 @@ class LoginTestCase(TestCase):
             'password' : 'logintestpassword',
         }
         response = self.client.post(self.login_url, login_data, format='json')
+        print(response.data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn('token', response.data)
 
-    def tets_login_wrong_password(self):
+    def test_login_wrong_password(self):
         login_data = {
             'username' : 'logintestuser',
             'password' : 'wrongpassword',
@@ -70,6 +74,32 @@ class LoginTestCase(TestCase):
         response = self.client.post(self.login_url, login_data, format='json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertNotIn('token', response.data)
+
+# 로그아웃 테스트
+class LogoutTestCase(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        # 테스트 용 유저 생성
+        self.user = User.objects.create_user(
+            username='testuser',
+            password='testpassword',
+        )
+        # 유처 토큰 획득
+        self.token = Token.objects.create(user=self.user)
+        self.client.credentials(HTTP_AUTHORIZATION = 'Token ' + self.token.key)
+        self.logout_url = reverse('logout')
+
+    def test_logout(self):
+        # 로그아웃 요청
+        response = self.client.post(self.logout_url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertFalse(Token.objects.filter(key=self.token.key).exists())
+
+    def test_logout_without_token(self):
+        self.client.credentials() # 헤더에서 토큰 제거
+        response = self.client.post(self.logout_url)
+        # 인증되지 않은 유저 요청에 대한 응답 코드 확인
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
 #시청기록조회 테스트
 class WatchHistoryAPITest(TestCase):
