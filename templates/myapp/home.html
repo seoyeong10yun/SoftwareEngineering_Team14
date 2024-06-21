@@ -19,6 +19,22 @@
     <input type="text" id="search-query" placeholder="Enter search query">
     <button onclick="searchContent()">Search</button>
 
+    <h2>Recommended Content</h2>
+    <div id="recommendations">
+        <h3>You liked similar genre</h3>
+        <ul id="liked-genre"></ul>
+        <h3>You liked similar cast</h3>
+        <ul id="liked-cast"></ul>
+        <h3>You liked similar director</h3>
+        <ul id="liked-director"></ul>
+        <h3>Similar genre to watched content</h3>
+        <ul id="watched-genre"></ul>
+        <h3>Similar cast to watched content</h3>
+        <ul id="watched-cast"></ul>
+        <h3>Same director as watched content</h3>
+        <ul id="watched-director"></ul>
+    </div>
+
     <h2>Content List</h2>
     <ul id="content-list"></ul>
     <button id="prev-page" disabled>Previous</button>
@@ -32,10 +48,91 @@
         <input type="hidden" name="token" id="token_input">
     </form>
 
-    <button id="logout">logout</button>
+    <button id="logout">Logout</button>
     <script>
         const token = localStorage.getItem('token');
         let currentPage = 1;
+
+        function loadRecommendedContent() {
+            fetch('/api/recommend/', {
+                headers: {
+                    'Authorization': `Token ${token}`,
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                const likedGenre = document.getElementById('liked-genre');
+                const likedCast = document.getElementById('liked-cast');
+                const likedDirector = document.getElementById('liked-director');
+                const watchedGenre = document.getElementById('watched-genre');
+                const watchedCast = document.getElementById('watched-cast');
+                const watchedDirector = document.getElementById('watched-director');
+
+                likedGenre.innerHTML = ''; // Clear existing content
+                likedCast.innerHTML = ''; // Clear existing content
+                likedDirector.innerHTML = ''; // Clear existing content
+                watchedGenre.innerHTML = ''; // Clear existing content
+                watchedCast.innerHTML = ''; // Clear existing content
+                watchedDirector.innerHTML = ''; // Clear existing content
+
+                if (!data.liked_content_exists) {
+                    likedGenre.innerHTML = '<li>No liked content available</li>';
+                    likedCast.innerHTML = '<li>No liked content available</li>';
+                    likedDirector.innerHTML = '<li>No liked content available</li>';
+                } else {
+                    data.liked_genre.forEach(item => {
+                        const li = document.createElement('li');
+                        li.textContent = item.title;
+                        li.onclick = () => window.location.href = `/content/${item.id}/`;
+                        likedGenre.appendChild(li);
+                    });
+
+                    data.liked_cast.forEach(item => {
+                        const li = document.createElement('li');
+                        li.textContent = item.title;
+                        li.onclick = () => window.location.href = `/content/${item.id}/`;
+                        likedCast.appendChild(li);
+                    });
+
+                    data.liked_director.forEach(item => {
+                        const li = document.createElement('li');
+                        li.textContent = item.title;
+                        li.onclick = () => window.location.href = `/content/${item.id}/`;
+                        likedDirector.appendChild(li);
+                    });
+                }
+
+                if (!data.watch_history_exists) {
+                    watchedGenre.innerHTML = '<li>No watch history available</li>';
+                    watchedCast.innerHTML = '<li>No watch history available</li>';
+                    watchedDirector.innerHTML = '<li>No watch history available</li>';
+                } else {
+                    data.watched_genre.forEach(item => {
+                        const li = document.createElement('li');
+                        li.textContent = item.title;
+                        li.onclick = () => window.location.href = `/content/${item.id}/`;
+                        watchedGenre.appendChild(li);
+                    });
+
+                    data.watched_cast.forEach(item => {
+                        const li = document.createElement('li');
+                        li.textContent = item.title;
+                        li.onclick = () => window.location.href = `/content/${item.id}/`;
+                        watchedCast.appendChild(li);
+                    });
+
+                    data.watched_director.forEach(item => {
+                        const li = document.createElement('li');
+                        li.textContent = item.title;
+                        li.onclick = () => window.location.href = `/content/${item.id}/`;
+                        watchedDirector.appendChild(li);
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error loading recommended content:', error);
+            });
+        }
 
         function loadContentList(page) {
             fetch(`/api/content_list/?page=${page}`, {
@@ -115,10 +212,11 @@
         }
 
         // Initial load
+        loadRecommendedContent();
         loadContentList(currentPage);
         loadWatchHistory();
 
-        // logout
+        // Logout
         document.getElementById("logout").addEventListener("click", function() {
             const token = localStorage.getItem('token');
             if (!token) {
