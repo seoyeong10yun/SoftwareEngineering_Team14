@@ -257,3 +257,16 @@ class RecommendContentView(APIView):
         }
 
         return Response(response_data, status=status.HTTP_200_OK)
+    
+# 장르별 컨텐츠를 출력하는 APIView
+class GenreContentView(APIView):
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [TokenAuthentication]
+
+    def get(self, request, genre):
+        paginator = PageNumberPagination()
+        paginator.page_size = 10  # 페이지당 10개의 항목을 표시
+        contents = Content.objects.filter(genre__icontains=genre)
+        result_page = paginator.paginate_queryset(contents, request)
+        serializer = ContentSerializer(result_page, many=True)
+        return paginator.get_paginated_response(serializer.data)

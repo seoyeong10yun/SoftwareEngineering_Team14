@@ -23,7 +23,7 @@
     <ul id="content-list"></ul>
     <button id="prev-page" disabled>Previous</button>
     <button id="next-page" disabled>Next</button>
-
+    
     <h2>Recommended Content</h2>
     <div id="recommendations">
         <h3>You liked similar genre</h3>
@@ -40,6 +40,57 @@
         <ul id="watched-director"></ul>
     </div>
 
+    <h2>Content by Genre</h2>
+    <select id="genre-select">
+        <!-- 장르 옵션들 -->
+        <option value="Dramas">Dramas</option>
+        <option value="Independent Movies">Independent Movies</option>
+        <option value="International Movies">International Movies</option>
+        <option value="British TV Shows">British TV Shows</option>
+        <option value="Reality TV">Reality TV</option>
+        <option value="Comedies">Comedies</option>
+        <option value="Romantic Movies">Romantic Movies</option>
+        <option value="Horror Movies">Horror Movies</option>
+        <option value="Sci-Fi & Fantasy">Sci-Fi & Fantasy</option>
+        <option value="Thrillers">Thrillers</option>
+        <option value="Action & Adventure">Action & Adventure</option>
+        <option value="Classic Movies">Classic Movies</option>
+        <option value="Anime Features">Anime Features</option>
+        <option value="Children & Family Movies">Children & Family Movies</option>
+        <option value="Documentaries">Documentaries</option>
+        <option value="Music & Musicals">Music & Musicals</option>
+        <option value="Cult Movies">Cult Movies</option>
+        <option value="Faith & Spirituality">Faith & Spirituality</option>
+        <option value="LGBTQ Movies">LGBTQ Movies</option>
+        <option value="Crime TV Shows">Crime TV Shows</option>
+        <option value="International TV Shows">International TV Shows</option>
+        <option value="TV Dramas">TV Dramas</option>
+        <option value="Romantic TV Shows">Romantic TV Shows</option>
+        <option value="Spanish-Language TV Shows">Spanish-Language TV Shows</option>
+        <option value="Stand-Up Comedy">Stand-Up Comedy</option>
+        <option value="TV Shows">TV Shows</option>
+        <option value="Movies">Movies</option>
+        <option value="TV Comedies">TV Comedies</option>
+        <option value="Sports Movies">Sports Movies</option>
+        <option value="TV Action & Adventure">TV Action & Adventure</option>
+        <option value="TV Sci-Fi & Fantasy">TV Sci-Fi & Fantasy</option>
+        <option value="TV Mysteries">TV Mysteries</option>
+        <option value="Docuseries">Docuseries</option>
+        <option value="Anime Series">Anime Series</option>
+        <option value="TV Horror">TV Horror</option>
+        <option value="Teen TV Shows">Teen TV Shows</option>
+        <option value="Korean TV Shows">Korean TV Shows</option>
+        <option value="Stand-Up Comedy & Talk Shows">Stand-Up Comedy & Talk Shows</option>
+        <option value="Kids' TV">Kids' TV</option>
+        <option value="Classic & Cult TV">Classic & Cult TV</option>
+        <option value="TV Thrillers">TV Thrillers</option>
+        <option value="Science & Nature TV">Science & Nature TV</option>
+    </select>
+    <button onclick="loadGenreContent()">Load Genre Content</button>
+    <ul id="genre-content-list"></ul>
+    <button id="prev-genre-page" disabled>Previous</button>
+    <button id="next-genre-page" disabled>Next</button>
+
     <h2>Your Watch History</h2>
     <ul id="watch-history"></ul>
 
@@ -52,6 +103,8 @@
     <script>
         const token = localStorage.getItem('token');
         let currentPage = 1;
+        let currentGenrePage = 1;
+        let currentGenre = '';
 
         function loadRecommendedContent() {
             fetch('/api/recommend/', {
@@ -113,7 +166,6 @@
                         li.onclick = () => window.location.href = `/content/${item.id}/`;
                         watchedGenre.appendChild(li);
                     });
-
                     data.watched_cast.forEach(item => {
                         const li = document.createElement('li');
                         li.textContent = item.title;
@@ -155,6 +207,46 @@
                 document.getElementById('next-page').disabled = !data.next;
             });
         }
+
+        function loadGenreContent(page = 1) {
+            const genre = document.getElementById('genre-select').value;
+            currentGenre = genre;
+
+            fetch(`/api/genre/${genre}/?page=${page}`, {
+                headers: {
+                    'Authorization': `Token ${token}`,
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                const genreContentList = document.getElementById('genre-content-list');
+                genreContentList.innerHTML = ''; // Clear existing content
+                data.results.forEach(content => {
+                    const li = document.createElement('li');
+                    li.textContent = content.title;
+                    li.onclick = () => window.location.href = `/content/${content.id}/`;
+                    genreContentList.appendChild(li);
+                });
+
+                document.getElementById('prev-genre-page').disabled = !data.previous;
+                document.getElementById('next-genre-page').disabled = !data.next;
+            })
+            .catch(error => {
+                console.error('Error loading genre content:', error);
+            });
+        }
+
+        document.getElementById('prev-genre-page').onclick = () => {
+            if (currentGenrePage > 1) {
+                currentGenrePage--;
+                loadGenreContent(currentGenrePage);
+            }
+        };
+
+        document.getElementById('next-genre-page').onclick = () => {
+            currentGenrePage++;
+            loadGenreContent(currentGenrePage);
+        };
 
         document.getElementById('prev-page').onclick = () => {
             if (currentPage > 1) {

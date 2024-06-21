@@ -21,4 +21,5 @@ urlpatterns = [
     path('dislike_content/', DislikeContentView.as_view(), name='dislike_content'),
     path('search/', ContentSearchView.as_view(), name='content_search'),
     path('recommend/', RecommendContentView.as_view(), name='recommend-content'),
+    path('genre/<str:genre>/', GenreContentView.as_view(), name='genre_content'),
 ]
