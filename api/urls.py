@@ -20,4 +20,5 @@ urlpatterns = [
     path('like_content/', LikeContentView.as_view(), name='like_content'),
     path('dislike_content/', DislikeContentView.as_view(), name='dislike_content'),
     path('search/', ContentSearchView.as_view(), name='content_search'),
+    path('recommend/', RecommendContentView.as_view(), name='recommend-content'),
 ]

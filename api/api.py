@@ -8,7 +8,7 @@ from rest_framework.authentication import TokenAuthentication
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.decorators import authentication_classes, permission_classes
 from django.utils import timezone
-from django.db.models import Q
+from django.db.models import Q, Count
 
 
 # 콘텐츠 리스트를 보여주는 apiview
@@ -183,3 +183,77 @@ class ContentSearchView(APIView):
         contents = Content.objects.filter(filters[tag])
         serializer = ContentSerializer(contents, many=True)
         return Response(serializer.data)
+    
+# 추천 콘텐츠 알고리즘 APIView
+class RecommendContentView(APIView):
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [TokenAuthentication]
+
+    def get(self, request):
+        user = request.user
+
+        # 좋아요 한 콘텐츠 가져오기
+        liked_content_ids = LikeContent.objects.filter(user=user).values_list('content_id', flat=True)
+
+        # 싫어요 한 콘텐츠 가져오기
+        disliked_content_ids = DislikeContent.objects.filter(user=user).values_list('content_id', flat=True)
+
+        # 시청 기록에서 유사한 콘텐츠 가져오기
+        watch_history_content_ids = WatchHistory.objects.filter(user=user).values_list('content_id', flat=True)
+        watched_contents = Content.objects.filter(id__in=watch_history_content_ids)
+
+        recommendations = {
+            'liked_genre': [],
+            'liked_cast': [],
+            'liked_director': [],
+            'watched_genre': [],
+            'watched_cast': [],
+            'watched_director': []
+        }
+
+        # 좋아요 한 콘텐츠와 유사한 장르
+        if liked_content_ids.exists():
+            liked_genres = Content.objects.filter(id__in=liked_content_ids).values_list('genre', flat=True)
+            recommendations['liked_genre'] = Content.objects.filter(
+                genre__in=liked_genres
+            ).exclude(id__in=disliked_content_ids).distinct()
+
+            liked_casts = Content.objects.filter(id__in=liked_content_ids).values_list('cast', flat=True)
+            recommendations['liked_cast'] = Content.objects.filter(
+                cast__in=liked_casts
+            ).exclude(id__in=disliked_content_ids).distinct()
+
+            liked_directors = Content.objects.filter(id__in=liked_content_ids).values_list('director', flat=True)
+            recommendations['liked_director'] = Content.objects.filter(
+                director__in=liked_directors
+            ).exclude(id__in=disliked_content_ids).distinct()
+
+        # 시청한 콘텐츠와 유사한 장르
+        if watch_history_content_ids.exists():
+            watched_genres = watched_contents.values_list('genre', flat=True)
+            recommendations['watched_genre'] = Content.objects.filter(
+                genre__in=watched_genres
+            ).exclude(id__in=disliked_content_ids).distinct()
+
+            watched_casts = watched_contents.values_list('cast', flat=True)
+            recommendations['watched_cast'] = Content.objects.filter(
+                cast__in=watched_casts
+            ).exclude(id__in=disliked_content_ids).distinct()
+
+            watched_directors = watched_contents.values_list('director', flat=True)
+            recommendations['watched_director'] = Content.objects.filter(
+                director__in=watched_directors
+            ).exclude(id__in=disliked_content_ids).distinct()
+
+        response_data = {
+            'liked_genre': ContentSerializer(recommendations['liked_genre'][:10], many=True).data,
+            'liked_cast': ContentSerializer(recommendations['liked_cast'][:10], many=True).data,
+            'liked_director': ContentSerializer(recommendations['liked_director'][:10], many=True).data,
+            'watched_genre': ContentSerializer(recommendations['watched_genre'][:10], many=True).data,
+            'watched_cast': ContentSerializer(recommendations['watched_cast'][:10], many=True).data,
+            'watched_director': ContentSerializer(recommendations['watched_director'][:10], many=True).data,
+            'liked_content_exists': liked_content_ids.exists(),
+            'watch_history_exists': watch_history_content_ids.exists()
+        }
+
+        return Response(response_data, status=status.HTTP_200_OK)
