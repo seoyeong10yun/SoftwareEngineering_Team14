@@ -15,6 +15,12 @@
     <h2>Your Watch History</h2>
     <ul id="watch-history"></ul>
 
+    <form id="logout_form" action="/api/logout/" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="token" id="token_input">
+    </form>
+
+    <button id="logout">logout</button>
     <script>
         const token = localStorage.getItem('token');
         let currentPage = 1;
@@ -74,6 +80,51 @@
         // Initial load
         loadContentList(currentPage);
         loadWatchHistory();
+
+        // logout
+        document.getElementById("logout").addEventListener("click", function() {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                alert('로그인되지 않았습니다.');
+                return;
+            }
+
+            fetch('/api/logout/', {
+                method: 'POST',
+                headers: {
+                    'Authorization': 'Token ' + token,
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')  // CSRF 토큰 설정
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    localStorage.removeItem('token');
+                    window.location.href = '/login/';
+                } else {
+                    alert('로그아웃에 실패했습니다. 다시 시도해주세요.');
+                }
+            })
+            .catch(error => {
+                console.error('로그아웃 요청 중 에러 발생:', error);
+                alert('로그아웃에 실패했습니다. 다시 시도해주세요.');
+            });
+        });
+
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
     </script>
 </body>
 </html>

@@ -56,6 +56,17 @@ class LoginView(APIView):
             return Response({'token': token.key}, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+# 유저 로그아웃
+@permission_classes([IsAuthenticated])
+@authentication_classes([TokenAuthentication])
+class LogoutView(APIView):
+    def post(self, request):
+        try:
+            request.user.auth_token.delete()
+            return Response(status=status.HTTP_200_OK)
+        except (AttributeError, Token.DoesNotExist):
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
 # 유저의 시청기록 조회를 위한 apiview
 @permission_classes([IsAuthenticated])
 @authentication_classes([TokenAuthentication])
@@ -65,7 +76,7 @@ class WatchHistoryView(APIView):
         watch_history = WatchHistory.objects.filter(user=user)
         serializer = WatchHistorySerializer(watch_history, many=True)
         return Response(serializer.data)
-    
+
 # 사용자가 콘텐츠를 시청할 때 호출되는 api
 @permission_classes([IsAuthenticated])
 @authentication_classes([TokenAuthentication])
