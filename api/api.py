@@ -78,7 +78,7 @@ class WatchHistoryView(APIView):
         watch_history = WatchHistory.objects.filter(user=user)
         serializer = WatchHistorySerializer(watch_history, many=True)
         return Response(serializer.data)
-    
+
 # 사용자가 콘텐츠를 시청할 때 호출되는 api
 @permission_classes([IsAuthenticated])
 @authentication_classes([TokenAuthentication])

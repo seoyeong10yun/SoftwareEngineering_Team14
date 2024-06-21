@@ -27,10 +27,12 @@
     <h2>Your Watch History</h2>
     <ul id="watch-history"></ul>
 
-    <form id="logout-form" action="/api/logout/" method="post">
+    <form id="logout_form" action="/api/logout/" method="post">
         {% csrf_token %}
-        <input type="hidden" name="token" id="token-input">
+        <input type="hidden" name="token" id="token_input">
     </form>
+
+    <button id="logout">logout</button>
     <script>
         const token = localStorage.getItem('token');
         let currentPage = 1;
