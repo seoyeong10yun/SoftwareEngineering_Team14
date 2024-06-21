@@ -211,7 +211,7 @@ class RecommendContentView(APIView):
             'watched_director': []
         }
 
-        # 좋아요 한 콘텐츠와 유사한 장르
+        # 좋아요한 콘텐츠
         if liked_content_ids.exists():
             liked_genres = Content.objects.filter(id__in=liked_content_ids).values_list('genre', flat=True)
             recommendations['liked_genre'] = Content.objects.filter(
@@ -219,9 +219,14 @@ class RecommendContentView(APIView):
             ).exclude(id__in=disliked_content_ids).distinct()
 
             liked_casts = Content.objects.filter(id__in=liked_content_ids).values_list('cast', flat=True)
-            cast_query = Q()
+            cast_list = []
             for cast in liked_casts:
-                cast_query |= Q(cast__icontains=cast)
+                cast_list.extend(cast.split(','))
+
+            cast_query = Q()
+            for cast in cast_list:
+                cast_query |= Q(cast__icontains=cast.strip())
+
             recommendations['liked_cast'] = Content.objects.filter(
                 cast_query
             ).exclude(id__in=disliked_content_ids).distinct()
@@ -231,7 +236,7 @@ class RecommendContentView(APIView):
                 director__in=liked_directors
             ).exclude(id__in=disliked_content_ids).distinct()
 
-        # 시청한 콘텐츠와 유사한 장르
+        # 시청한 콘텐츠
         if watch_history_content_ids.exists():
             watched_genres = watched_contents.values_list('genre', flat=True)
             recommendations['watched_genre'] = Content.objects.filter(
@@ -239,9 +244,14 @@ class RecommendContentView(APIView):
             ).exclude(id__in=disliked_content_ids).distinct()
 
             watched_casts = watched_contents.values_list('cast', flat=True)
-            cast_query = Q()
+            cast_list = []
             for cast in watched_casts:
-                cast_query |= Q(cast__icontains=cast)
+                cast_list.extend(cast.split(','))
+
+            cast_query = Q()
+            for cast in cast_list:
+                cast_query |= Q(cast__icontains=cast.strip())
+
             recommendations['watched_cast'] = Content.objects.filter(
                 cast_query
             ).exclude(id__in=disliked_content_ids).distinct()
