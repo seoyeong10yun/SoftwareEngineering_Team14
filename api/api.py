@@ -198,7 +198,7 @@ class RecommendContentView(APIView):
         # 싫어요 한 콘텐츠 가져오기
         disliked_content_ids = DislikeContent.objects.filter(user=user).values_list('content_id', flat=True)
 
-        # 시청 기록에서 유사한 태그를 가진 콘텐츠 가져오기
+        # 시청 기록에서 유사한 콘텐츠 가져오기
         watch_history_content_ids = WatchHistory.objects.filter(user=user).values_list('content_id', flat=True)
         watched_contents = Content.objects.filter(id__in=watch_history_content_ids)
 
@@ -216,42 +216,42 @@ class RecommendContentView(APIView):
             liked_genres = Content.objects.filter(id__in=liked_content_ids).values_list('genre', flat=True)
             recommendations['liked_genre'] = Content.objects.filter(
                 genre__in=liked_genres
-            ).exclude(id__in=disliked_content_ids).distinct()[:10]
+            ).exclude(id__in=disliked_content_ids).distinct()
 
             liked_casts = Content.objects.filter(id__in=liked_content_ids).values_list('cast', flat=True)
             recommendations['liked_cast'] = Content.objects.filter(
                 cast__in=liked_casts
-            ).exclude(id__in=disliked_content_ids).distinct()[:10]
+            ).exclude(id__in=disliked_content_ids).distinct()
 
             liked_directors = Content.objects.filter(id__in=liked_content_ids).values_list('director', flat=True)
             recommendations['liked_director'] = Content.objects.filter(
                 director__in=liked_directors
-            ).exclude(id__in=disliked_content_ids).distinct()[:10]
+            ).exclude(id__in=disliked_content_ids).distinct()
 
         # 시청한 콘텐츠와 유사한 장르
         if watch_history_content_ids.exists():
             watched_genres = watched_contents.values_list('genre', flat=True)
             recommendations['watched_genre'] = Content.objects.filter(
                 genre__in=watched_genres
-            ).exclude(id__in=disliked_content_ids).distinct()[:10]
+            ).exclude(id__in=disliked_content_ids).distinct()
 
             watched_casts = watched_contents.values_list('cast', flat=True)
             recommendations['watched_cast'] = Content.objects.filter(
                 cast__in=watched_casts
-            ).exclude(id__in=disliked_content_ids).distinct()[:10]
+            ).exclude(id__in=disliked_content_ids).distinct()
 
             watched_directors = watched_contents.values_list('director', flat=True)
             recommendations['watched_director'] = Content.objects.filter(
                 director__in=watched_directors
-            ).exclude(id__in=disliked_content_ids).distinct()[:10]
+            ).exclude(id__in=disliked_content_ids).distinct()
 
         response_data = {
-            'liked_genre': ContentSerializer(recommendations['liked_genre'], many=True).data,
-            'liked_cast': ContentSerializer(recommendations['liked_cast'], many=True).data,
-            'liked_director': ContentSerializer(recommendations['liked_director'], many=True).data,
-            'watched_genre': ContentSerializer(recommendations['watched_genre'], many=True).data,
-            'watched_cast': ContentSerializer(recommendations['watched_cast'], many=True).data,
-            'watched_director': ContentSerializer(recommendations['watched_director'], many=True).data,
+            'liked_genre': ContentSerializer(recommendations['liked_genre'][:10], many=True).data,
+            'liked_cast': ContentSerializer(recommendations['liked_cast'][:10], many=True).data,
+            'liked_director': ContentSerializer(recommendations['liked_director'][:10], many=True).data,
+            'watched_genre': ContentSerializer(recommendations['watched_genre'][:10], many=True).data,
+            'watched_cast': ContentSerializer(recommendations['watched_cast'][:10], many=True).data,
+            'watched_director': ContentSerializer(recommendations['watched_director'][:10], many=True).data,
             'liked_content_exists': liked_content_ids.exists(),
             'watch_history_exists': watch_history_content_ids.exists()
         }
