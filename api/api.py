@@ -219,8 +219,11 @@ class RecommendContentView(APIView):
             ).exclude(id__in=disliked_content_ids).distinct()
 
             liked_casts = Content.objects.filter(id__in=liked_content_ids).values_list('cast', flat=True)
+            cast_query = Q()
+            for cast in liked_casts:
+                cast_query |= Q(cast__icontains=cast)
             recommendations['liked_cast'] = Content.objects.filter(
-                cast__in=liked_casts
+                cast_query
             ).exclude(id__in=disliked_content_ids).distinct()
 
             liked_directors = Content.objects.filter(id__in=liked_content_ids).values_list('director', flat=True)
@@ -236,8 +239,11 @@ class RecommendContentView(APIView):
             ).exclude(id__in=disliked_content_ids).distinct()
 
             watched_casts = watched_contents.values_list('cast', flat=True)
+            cast_query = Q()
+            for cast in watched_casts:
+                cast_query |= Q(cast__icontains=cast)
             recommendations['watched_cast'] = Content.objects.filter(
-                cast__in=watched_casts
+                cast_query
             ).exclude(id__in=disliked_content_ids).distinct()
 
             watched_directors = watched_contents.values_list('director', flat=True)
