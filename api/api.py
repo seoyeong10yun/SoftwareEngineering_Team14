@@ -112,6 +112,9 @@ class LikeContentView(APIView):
             content = Content.objects.get(id=content_id)
         except Content.DoesNotExist:
             return Response({'error': 'Content not found'}, status=status.HTTP_404_NOT_FOUND)
+        
+        # Check if the content is already disliked by the user and remove it
+        DislikeContent.objects.filter(user=user, content=content).delete()
 
         like, created = LikeContent.objects.get_or_create(user=user, content=content)
         if not created:
@@ -135,6 +138,9 @@ class DislikeContentView(APIView):
             content = Content.objects.get(id=content_id)
         except Content.DoesNotExist:
             return Response({'error': 'Content not found'}, status=status.HTTP_404_NOT_FOUND)
+        
+        # Check if the content is already liked by the user and remove it
+        LikeContent.objects.filter(user=user, content=content).delete()
 
         dislike, created = DislikeContent.objects.get_or_create(user=user, content=content)
         if not created:
