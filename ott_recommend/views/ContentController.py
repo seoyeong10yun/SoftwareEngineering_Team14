@@ -1,9 +1,9 @@
 from django.shortcuts import render
-from .models import Movie
+from ..models import Movie
 
-def home(request):
+def display(request):
     movies = Movie.objects.all()
-    return render(request, 'home.html', {'movies': movies})
+    return render(request, 'display.html', {'movies': movies})
 
 def content_info(request, slug):
     movie = Movie.objects.get(slug=slug)

@@ -1,3 +1,8 @@
 from django.contrib import admin
+from .models import Content, WatchHistory, LikeContent, DislikeContent
 
-# Register your models here.
+admin.site.register(Content)
+admin.site.register(WatchHistory)
+admin.site.register(LikeContent)
+admin.site.register(DislikeContent)
+
