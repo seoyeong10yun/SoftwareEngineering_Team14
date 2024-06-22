@@ -1,93 +1,30 @@
+{% load static %}
+
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Content Info</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
-    <h1>Content Information</h1>
-    <div id="content-info"></div>
-    <button id="like-button">Like</button>
-    <button id="dislike-button">Dislike</button>
-    <button id="watch-button">Watch</button>
+    <header>
+        <nav>
+            <a href="{% url 'display.html' %}">홈</a>
+        </nav>
+    </header>
 
-    <script>
-        const token = localStorage.getItem('token');
-        const contentId = window.location.pathname.split('/').slice(-2, -1)[0];
+    <main>
+        <div class="content-info">
+            <img id="content-poster" src="{{ movie.poster.url }}" alt="Content Poster">
+            <h2 id="content-title">{{ movie.title }}</h2>
+            <p id="content-description">{{ movie.description }}</p>
+            <button id="like-btn">좋아요</button>
+            <button id="dislike-btn">싫어요</button>
+        </div>
+    </main>
 
-        fetch(`/api/content_list/${contentId}/`, {
-            headers: {
-                'Authorization': `Token ${token}`,
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            const contentInfo = document.getElementById('content-info');
-            contentInfo.innerHTML = `
-                <h2>${data.title}</h2>
-                <p><strong>Genre:</strong> ${data.genre}</p>
-                <p><strong>Release Date:</strong> ${data.release_date}</p>
-                <p><strong>Rating:</strong> ${data.rating}</p>
-                <p><strong>Description:</strong> ${data.description}</p>
-                <p><strong>Director:</strong> ${data.director}</p>
-                <p><strong>Cast:</strong> ${data.cast}</p>
-                <p><strong>Country:</strong> ${data.country}</p>
-                <p><strong>Duration:</strong> ${data.duration}</p>
-            `;
-        });
-
-        document.getElementById('like-button').onclick = () => {
-            fetch('/api/like_content/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Token ${token}`,
-                },
-                body: JSON.stringify({content_id: contentId}),
-            })
-            .then(response => response.json())
-            .then(data => {
-                alert(data.message || 'Liked!');
-            });
-        };
-
-        document.getElementById('dislike-button').onclick = () => {
-            fetch('/api/dislike_content/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Token ${token}`,
-                },
-                body: JSON.stringify({content_id: contentId}),
-            })
-            .then(response => response.json())
-            .then(data => {
-                alert(data.message || 'Disliked!');
-            });
-        };
-
-        document.getElementById('watch-button').onclick = () => {
-            fetch('/api/add_watch_history/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Token ${token}`,
-                },
-                body: JSON.stringify({content_id: contentId}),
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.error) {
-                    alert(data.error);
-                } else {
-                    alert('Watch history added!');
-                }
-            })
-            .catch(error => {
-                console.error('Error adding to watch history:', error);
-            });
-        };
-    </script>
+    <script src="{% static 'js/contentInfo.js' %}"></script>
 </body>
 </html>
