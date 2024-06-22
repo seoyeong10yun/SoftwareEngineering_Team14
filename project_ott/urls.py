@@ -2,7 +2,6 @@ from django.contrib import admin
 from django.urls import path, include
 
 from django.views.generic import TemplateView, RedirectView
-from ..ott_recommend.views.ContentController import content_list
 
 from django.conf.urls.static import static
 from django.conf import settings
