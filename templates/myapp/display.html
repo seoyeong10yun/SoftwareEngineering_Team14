@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OTT 추천 서비스</title>
-    <link rel="stylesheet" href="{% static '/css/style.css' %}?after">
+    <link rel="stylesheet" href="{% static 'myapp/css/style.css' %}?after">
 </head>
 <body>
     <header>
@@ -17,41 +17,33 @@
           <option value="cast">Cast</option>
           <option value="country">Country</option>
         </select>
-        <input type="text" id="search-query" placeholder="영화 검색">
+        <input type="text" id="search-query" placeholder="검색">
         <button onclick="searchContent()">Search</button>
       </div>
+
+      <h2 class="menu-bar con-min-width">
+        <div class="con">
+          <nav class="menu-bar__menu-box-1 text-align-center">
+            <ul class="inline-grid">
+              <li><a href="#" class="block">추천</a></li>
+              <li><a href="#" class="block">시청기록</a></li>
+              <li><a href="#" class="block">장르</a></li>
+            </ul>
+          </nav>
+        </div>
+      </h2>
+
     </header>
 
     <main>
-      <div class="main-banner">
-        <img src="{% static 'images/main_banner.jpg' %}" alt="Main Banner">
-      </div>
-  
-      <nav class="menu-bar">
-         <button class="menu-button" onclick="loadContentList('recommend')">추천</button>
-          <button class="menu-button" onclick="loadContentList('history')">시청기록</button>
-          <button class="menu-button" onclick="loadContentList('genre')">장르</button>
-        </nav>
-  
-        <section class="content-list" id="recommend">
-            <div class="scroll-container">
-              <!-- 추천 콘텐츠 아이템 -->
-            </div>
-          </section>
-      
-          <section class="content-list" id="history" style="display: none;">
-            <div class="scroll-container">
-              <!-- 시청기록 콘텐츠 아이템 -->
-            </div>
-          </section>
-      
-          <section class="content-list" id="genres" style="display: none;">
-            <div class="scroll-container">
-              <!-- 장르 선택 콘텐츠 아이템 -->
+        <section class="content-section">
+            <div class="content-list">
+              <div class="content-item">
+              </div>
             </div>
           </section>
     </main>
 
-    <script src="{% static 'js/clickEvent.js' %}"></script>
+    <script src="{% static 'myapp/js/clickEvent.js' %}"></script>
 </body>
 </html>
