@@ -1,0 +1,30 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Content Info</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="{% url 'home' %}">홈</a>
+        </nav>
+    </header>
+
+    <main>
+        <div class="content-info">
+            <img id="content-poster" src="{{ movie.poster.url }}" alt="Content Poster">
+            <h2 id="content-title">{{ movie.title }}</h2>
+            <p id="content-description">{{ movie.description }}</p>
+            <button id="like-btn">좋아요</button>
+            <button id="dislike-btn">싫어요</button>
+        </div>
+    </main>
+
+    <script src="{% static 'js/contentInfo.js' %}"></script>
+</body>
+</html>

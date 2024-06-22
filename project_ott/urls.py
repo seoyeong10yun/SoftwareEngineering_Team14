@@ -16,8 +16,10 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from ..ott_recommend.views import ContentController
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('api.urls')),
+    path('content/<slug:slug>/', ContentController.content_info, name='content_info'),
 ]

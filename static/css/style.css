@@ -1,0 +1,48 @@
+/* Header */
+header {
+    background-color: #333;
+    padding: 20px;
+}
+
+.search-bar {
+    display: flex;
+    justify-content: center;
+}
+
+.search-bar input, .search-bar button {
+    padding: 10px;
+    font-size: 16px;
+}
+
+/* Main Content */
+.main-banner img {
+    width: 100%;
+    max-height: 400px;
+    object-fit: cover;
+}
+
+.content-list {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding: 20px 0;
+}
+
+.content-list::-webkit-scrollbar {
+    display: none;
+}
+
+.content-item {
+    flex-shrink: 0;
+    width: 200px;
+    margin-right: 20px;
+    text-align: center;
+}
+
+.content-item img {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+}
