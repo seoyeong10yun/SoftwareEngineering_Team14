@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', function () {
+  const token=localStorage.getItem('token');
   const menuItems = document.querySelectorAll('.menu-bar__menu-box-1 ul li a');
   const sections = document.querySelectorAll('.content-list');
 
@@ -12,7 +13,7 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 function loadContent(category) {
-  fetch('/api/${category}', {
+  fetch(`/api/${category}`, {
     headers: {
       'Authorization': `Token ${token}`,
     }
@@ -27,11 +28,11 @@ function loadContent(category) {
 }
 
 function updateContentList(data) {
-  const contentList = document.querySelector('.content-list');
+  const contentList = document.querySelector('content-list');
   contentList.innerHTML = '';
 
-  data.forEach(item => {
-    const contentItem = document.createElement('div');
+  data.results.forEach(content => {
+    const contentItem = document.createElement('contnetItem');
     contentItem.className = 'content-item';
     contentItem.innerHTML = `
           <img class="poster" src="poster.img" alt="포스터">
