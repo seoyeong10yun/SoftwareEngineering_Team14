@@ -13,16 +13,6 @@ body,ul,li {
     margin-right: auto;
 }
 
-/* 사이트의 최소 너비 결정 */
-.con-min-width {
-    min-width: 1200px;
-    padding: 0 10px;
-}
-
-.con {
-    width: 1000px;
-}
-
 .container {
     display: flex;
     flex-direction: column;
@@ -50,11 +40,15 @@ header {
 
 .menu-bar {
     background-color: #444;
+    display: flex;
+    justify-content: center; /* 중앙 정렬 */
+    width: 100%; /* 전체 폭을 차지하게 설정 */
 }
 
 .menu-bar__menu-box-1 {
     display: flex;
     justify-content: center;
+    width: 100%; /* 전체 폭을 차지하게 설정 */
 }
 
 .menu-bar__menu-box-1 ul {
@@ -64,11 +58,15 @@ header {
     display: flex;
     justify-content: center;
     background-color: #444;
+    align-items: center; /* 수직 중앙 정렬 */
+    flex-wrap: nowrap; /* 항목이 줄 바꿈되지 않도록 설정 */
+    overflow-x: auto; /* 메뉴가 화면을 넘어갈 경우 스크롤 가능하게 설정 */
 }
 
 .menu-bar__menu-box-1 ul li {
     margin: 0 15px;
-    background-color: #444;
+    white-space: nowrap; /* 텍스트가 줄 바꿈되지 않도록 설정 */
+    flex: 0 0 auto; /* 항목이 고정 너비를 가지도록 설정 */
 }
 
 .menu-bar__menu-box-1 ul li a {
@@ -82,6 +80,7 @@ header {
 
 .menu-bar__menu-box-1 ul li a:hover {
     background-color: #666;
+    justify-content: center;
 }
 
 
