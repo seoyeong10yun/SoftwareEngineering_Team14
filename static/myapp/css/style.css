@@ -50,7 +50,7 @@ header {
 }
 
 .menu-bar {
-    background-color: #444;
+    background-color: #FF8585;
     display: flex;
     justify-content: center;
     /* 중앙 정렬 */
@@ -71,7 +71,7 @@ header {
     margin: 0;
     display: flex;
     justify-content: center;
-    background-color: #444;
+    background-color: #FF8585;
     align-items: center;
     /* 수직 중앙 정렬 */
     flex-wrap: nowrap;
@@ -94,11 +94,11 @@ header {
     font-size: 18px;
     padding: 5px;
     display: block;
-    background-color: #444;
+    background-color: #FF8585;
 }
 
 .menu-bar__menu-box-1 ul li a:hover {
-    background-color: #666;
+    background-color: #FF4343;
     justify-content: center;
 }
 
