@@ -10,7 +10,7 @@ const token = localStorage.getItem('token');
         .then(data => {
             const contentInfo = document.getElementById('content-info');
             contentInfo.innerHTML = `
-                <h2>${data.title}</h2>
+                <h1>${data.title}</h1>
                 <p><strong>Genre:</strong> ${data.genre}</p>
                 <p><strong>Release Date:</strong> ${data.release_date}</p>
                 <p><strong>Rating:</strong> ${data.rating}</p>
