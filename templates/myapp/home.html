@@ -45,17 +45,20 @@
     </h2>
   </header>
 
-  <main>
-    <section class="content-section">
-      <div class="content-list">
-        <!-- menu-bar에서 누른 contents list 출력 -->
-        <div class="content-item">
-        </div>
-      </div>
-    </section>
-  </main>
+  <script>
+    var token = "{{ token }}";
+  </script>
 
   <script src="{% static 'myapp/js/clickEvent.js' %}"></script>
+
+  <section class="content-section">
+    <div class="content-list">
+      <!-- menu-bar에서 누른 contents list 출력 -->
+      <div class="content-item">
+      </div>
+    </div>
+  </section>
+  
 </body>
 
 </html>
