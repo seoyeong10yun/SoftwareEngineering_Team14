@@ -9,6 +9,7 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework.decorators import authentication_classes, permission_classes
 from django.utils import timezone
 from django.db.models import Q, Count
+import random
 
 
 # 콘텐츠 리스트를 보여주는 apiview
@@ -211,12 +212,21 @@ class RecommendContentView(APIView):
             'watched_director': []
         }
 
+        def get_random_sample(queryset, sample_size=10):
+            count = queryset.count()
+            if count > sample_size:
+                indices = random.sample(range(count), sample_size)
+                return [queryset[i] for i in indices]
+            return list(queryset)
+
         # 좋아요한 콘텐츠
         if liked_content_ids.exists():
             liked_genres = Content.objects.filter(id__in=liked_content_ids).values_list('genre', flat=True)
-            recommendations['liked_genre'] = Content.objects.filter(
-                genre__in=liked_genres
-            ).exclude(id__in=disliked_content_ids).distinct()
+            recommendations['liked_genre'] = get_random_sample(
+                Content.objects.filter(
+                    genre__in=liked_genres
+                ).exclude(id__in=disliked_content_ids).distinct()
+            )
 
             liked_casts = Content.objects.filter(id__in=liked_content_ids).values_list('cast', flat=True)
             cast_list = []
@@ -227,21 +237,27 @@ class RecommendContentView(APIView):
             for cast in cast_list:
                 cast_query |= Q(cast__icontains=cast.strip())
 
-            recommendations['liked_cast'] = Content.objects.filter(
-                cast_query
-            ).exclude(id__in=disliked_content_ids).distinct()
+            recommendations['liked_cast'] = get_random_sample(
+                Content.objects.filter(
+                    cast_query
+                ).exclude(id__in=disliked_content_ids).distinct()
+            )
 
             liked_directors = Content.objects.filter(id__in=liked_content_ids).values_list('director', flat=True)
-            recommendations['liked_director'] = Content.objects.filter(
-                director__in=liked_directors
-            ).exclude(id__in=disliked_content_ids).distinct()
+            recommendations['liked_director'] = get_random_sample(
+                Content.objects.filter(
+                    director__in=liked_directors
+                ).exclude(id__in=disliked_content_ids).distinct()
+            )
 
         # 시청한 콘텐츠
         if watch_history_content_ids.exists():
             watched_genres = watched_contents.values_list('genre', flat=True)
-            recommendations['watched_genre'] = Content.objects.filter(
-                genre__in=watched_genres
-            ).exclude(id__in=disliked_content_ids).distinct()
+            recommendations['watched_genre'] = get_random_sample(
+                Content.objects.filter(
+                    genre__in=watched_genres
+                ).exclude(id__in=disliked_content_ids).distinct()
+            )
 
             watched_casts = watched_contents.values_list('cast', flat=True)
             cast_list = []
@@ -252,28 +268,32 @@ class RecommendContentView(APIView):
             for cast in cast_list:
                 cast_query |= Q(cast__icontains=cast.strip())
 
-            recommendations['watched_cast'] = Content.objects.filter(
-                cast_query
-            ).exclude(id__in=disliked_content_ids).distinct()
+            recommendations['watched_cast'] = get_random_sample(
+                Content.objects.filter(
+                    cast_query
+                ).exclude(id__in=disliked_content_ids).distinct()
+            )
 
             watched_directors = watched_contents.values_list('director', flat=True)
-            recommendations['watched_director'] = Content.objects.filter(
-                director__in=watched_directors
-            ).exclude(id__in=disliked_content_ids).distinct()
+            recommendations['watched_director'] = get_random_sample(
+                Content.objects.filter(
+                    director__in=watched_directors
+                ).exclude(id__in=disliked_content_ids).distinct()
+            )
 
         response_data = {
-            'liked_genre': ContentSerializer(recommendations['liked_genre'][:10], many=True).data,
-            'liked_cast': ContentSerializer(recommendations['liked_cast'][:10], many=True).data,
-            'liked_director': ContentSerializer(recommendations['liked_director'][:10], many=True).data,
-            'watched_genre': ContentSerializer(recommendations['watched_genre'][:10], many=True).data,
-            'watched_cast': ContentSerializer(recommendations['watched_cast'][:10], many=True).data,
-            'watched_director': ContentSerializer(recommendations['watched_director'][:10], many=True).data,
+            'liked_genre': ContentSerializer(recommendations['liked_genre'], many=True).data,
+            'liked_cast': ContentSerializer(recommendations['liked_cast'], many=True).data,
+            'liked_director': ContentSerializer(recommendations['liked_director'], many=True).data,
+            'watched_genre': ContentSerializer(recommendations['watched_genre'], many=True).data,
+            'watched_cast': ContentSerializer(recommendations['watched_cast'], many=True).data,
+            'watched_director': ContentSerializer(recommendations['watched_director'], many=True).data,
             'liked_content_exists': liked_content_ids.exists(),
             'watch_history_exists': watch_history_content_ids.exists()
         }
 
         return Response(response_data, status=status.HTTP_200_OK)
-    
+        
 # 장르별 컨텐츠를 출력하는 APIView
 class GenreContentView(APIView):
     permission_classes = [IsAuthenticated]
