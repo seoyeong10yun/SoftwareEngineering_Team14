@@ -23,6 +23,8 @@ document.addEventListener('DOMContentLoaded', function () {
           url = '/api/watch_history/';
       } else if (category === 'genre') {
           loadGenreContent(token);
+          const pagination = document.getElementById('pagination');
+          pagination.style.display = 'none';
           return;
       }
 
@@ -289,7 +291,6 @@ function paginateResults(results, page, itemsPerPage) {
         const contentItem = document.createElement('div');
         contentItem.className = 'content-item';
         contentItem.innerHTML = `
-            <img class="poster" src="${content.poster || ''}" alt="포스터">
             <h3>${content.title}</h3>
             <p>${content.description}</p>
         `;

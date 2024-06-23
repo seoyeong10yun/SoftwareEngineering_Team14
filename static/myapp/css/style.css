@@ -155,16 +155,14 @@ footer {
 
 /* 검색 결과에만 적용되는 CSS */
 #content-list {
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* 한 행에 4개씩 */
     gap: 20px;
     justify-content: center;
     margin-top: 20px;
 }
 
 #content-list .content-item {
-    width: calc(25% - 20px); /* 한 행에 4개씩 */
-    margin-bottom: 20px;
     background-color: #fff;
     border-radius: 10px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
