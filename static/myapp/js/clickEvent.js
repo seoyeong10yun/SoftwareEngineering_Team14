@@ -1,15 +1,14 @@
 document.addEventListener('DOMContentLoaded', function () {
-  // const tokenInput = document.getElementById('token_input');
+  const tokenInput = document.getElementById('token_input');
   const token = localStorage.getItem('token');
   if (!token) {
     alert('로그인되지 않았습니다.');
     return;
   }
-  // if (tokenInput) {
-  //   tokenInput.value = token;
-  // }
+  if (tokenInput) {
+    tokenInput.value = token;
+  }
   const menuItems = document.querySelectorAll('.menu-bar__menu-box-1 a');
-  // const sections = document.querySelectorAll('.content-list');
 
   menuItems.forEach(item => {
     item.addEventListener('click', function (event) {
@@ -44,6 +43,10 @@ document.addEventListener('DOMContentLoaded', function () {
         } else if (category === 'watch_history') {
           updateWatchHistoryList(data);
         } // 추가 카테고리 작업은 여기에 추가
+
+        const pagination = document.getElementById('pagination');
+        pagination.style.display = 'none';
+
       })
       .catch(error => {
         console.error('Error loading content:', error);
@@ -66,7 +69,7 @@ document.addEventListener('DOMContentLoaded', function () {
       genreContent.innerHTML = '';
     }
     if (searchContent) {
-      genreContent.innerHTML = '';      
+      genreContent.innerHTML = '';
     }
   }
 
@@ -94,20 +97,31 @@ document.addEventListener('DOMContentLoaded', function () {
     hideAllContent();
     const recommendations = document.getElementById('recommendations');
     if (recommendations) {
-      recommendations.style.display = 'block';
+      recommendations.style.display = 'flex';
       recommendations.innerHTML = `
-          <h3>Liked Genre</h3>
-          <ul id="liked-genre"></ul>
-          <h3>Liked Cast</h3>
-          <ul id="liked-cast"></ul>
-          <h3>Liked Director</h3>
-          <ul id="liked-director"></ul>
-          <h3>Watched Genre</h3>
-          <ul id="watched-genre"></ul>
-          <h3>Watched Cast</h3>
-          <ul id="watched-cast"></ul>
-          <h3>Watched Director</h3>
-          <ul id="watched-director"></ul>
+           <h3>Liked Genre</h3>
+            <div class="recommendations-container">
+                <ul id="liked-genre"></ul>
+            </div>
+            <h3>Liked Cast</h3>
+            <div class="recommendations-container">
+                <ul id="liked-cast"></ul>
+            </div>
+            <h3>Liked Director</h3>
+            <div class="recommendations-container">
+                <ul id="liked-director"></ul>
+            </div>
+            <h3>Watched Genre</h3>
+            <div class="recommendations-container">
+                <ul id="watched-genre"></ul>
+            </div>
+            <h3>Watched Cast</h3>
+            <div class="recommendations-container">
+                <ul id="watched-cast"></ul>
+            </div>
+            <h3>Watched Director</h3>
+            <div class="recommendations-container">
+                <ul id="watched-director"></ul>
       `;
 
       const likedGenre = document.getElementById('liked-genre');
@@ -123,21 +137,23 @@ document.addEventListener('DOMContentLoaded', function () {
         likedDirector.innerHTML = '<li>No liked content available</li>';
       } else {
         data.liked_genre.forEach(item => {
-          const itemsToDisplay = data.liked_genre.results.slice(0, 9); // 최대 9개의 아이템만 처리
-          const li = document.createElement('div');
+          const li = document.createElement('li');
           li.className = 'content-item';
           li.innerHTML = `
-          <img class="poster" src="${item.poster}" alt="포스터">
           <h3>${item.title}</h3>
-          <p>${item.description}</p>`;
+          <p>${item.description}</p>
+          `;
           li.onclick = () => window.location.href = `/content/${item.id}/`;
-          likedGenre.lastChild.appendChild(li);
+          likedGenre.appendChild(li);
         });
 
         data.liked_cast.forEach(item => {
           const li = document.createElement('li');
           li.className = 'content-item';
-          li.textContent = item.title;
+          li.innerHTML = `
+          <h3>${item.title}</h3>
+          <p>${item.description}</p>
+          `;
           li.onclick = () => window.location.href = `/content/${item.id}/`;
           likedCast.appendChild(li);
         });
@@ -145,7 +161,10 @@ document.addEventListener('DOMContentLoaded', function () {
         data.liked_director.forEach(item => {
           const li = document.createElement('li');
           li.className = 'content-item';
-          li.textContent = item.title;
+          li.innerHTML = `
+          <h3>${item.title}</h3>
+          <p>${item.description}</p>
+          `;
           li.onclick = () => window.location.href = `/content/${item.id}/`;
           likedDirector.appendChild(li);
         });
@@ -159,14 +178,20 @@ document.addEventListener('DOMContentLoaded', function () {
         data.watched_genre.forEach(item => {
           const li = document.createElement('li');
           li.className = 'content-item';
-          li.textContent = item.title;
+          li.innerHTML = `
+          <h3>${item.title}</h3>
+          <p>${item.description}</p>
+          `;
           li.onclick = () => window.location.href = `/content/${item.id}/`;
           watchedGenre.appendChild(li);
         });
         data.watched_cast.forEach(item => {
           const li = document.createElement('li');
           li.className = 'content-item';
-          li.textContent = item.title;
+          li.innerHTML = `
+          <h3>${item.title}</h3>
+          <p>${item.description}</p>
+          `;
           li.onclick = () => window.location.href = `/content/${item.id}/`;
           watchedCast.appendChild(li);
         });
@@ -174,7 +199,10 @@ document.addEventListener('DOMContentLoaded', function () {
         data.watched_director.forEach(item => {
           const li = document.createElement('li');
           li.className = 'content-item';
-          li.textContent = item.title;
+          li.innerHTML = `
+          <h3>${item.title}</h3>
+          <p>${item.description}</p>
+          `;
           li.onclick = () => window.location.href = `/content/${item.id}/`;
           watchedDirector.appendChild(li);
         });
@@ -203,7 +231,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   const searchButton = document.getElementById('search-button');
   searchButton.addEventListener('click', function () {
-      searchContent(token);
+    searchContent(token);
   });
 
   function searchContent(token) {
@@ -224,21 +252,74 @@ document.addEventListener('DOMContentLoaded', function () {
         contentList.style.display = 'block';
         contentList.innerHTML = ''; // 기존 내용을 지웁니다
 
-        data.forEach(content => {
-            const contentItem = document.createElement('div');
-            contentItem.className = 'content-item';
-            contentItem.innerHTML = `
-                <img class="poster" src="${content.poster || ''}" alt="포스터">
-                <h3>${content.title}</h3>
-                <p>${content.description}</p>
-            `;
-            contentItem.onclick = () => window.location.href = `/content/${content.id}/`;
-            contentList.appendChild(contentItem);
-        });
+        if (data.length === 0) {
+          contentList.innerHTML = '<p>검색 결과가 없습니다.</p>';
+          return;
+        }
+
+        paginateResults(data, 1, 12); // 초기 페이지 로드를 위해 호출
+
+        createPagination(data, 12); // 페이징 버튼 생성
       })
       .catch(error => {
         console.error('Error searching content:', error);
       });
+  }
+
+  function paginateResults(results, page, itemsPerPage) {
+    const contentList = document.getElementById('content-list');
+    contentList.innerHTML = ''; // 기존 내용을 지웁니다
+
+    const start = (page - 1) * itemsPerPage;
+    const end = start + itemsPerPage;
+    const paginatedItems = results.slice(start, end);
+
+    paginatedItems.forEach(content => {
+      const contentItem = document.createElement('div');
+      contentItem.className = 'content-item';
+      contentItem.innerHTML = `
+            <h3>${content.title}</h3>
+            <p>${content.description}</p>
+        `;
+      contentItem.onclick = () => window.location.href = `/content/${content.id}/`;
+      contentList.appendChild(contentItem);
+    });
+  }
+
+  function createPagination(results, itemsPerPage) {
+    const pagination = document.getElementById('pagination');
+    pagination.style.display = 'block';
+    pagination.innerHTML = '';
+
+    let currentPage = 1;
+    const totalPages = Math.ceil(results.length / itemsPerPage);
+
+    const prevButton = document.createElement('button');
+    prevButton.textContent = '이전';
+    prevButton.disabled = currentPage === 1;
+    prevButton.addEventListener('click', () => {
+      if (currentPage > 1) {
+        currentPage--;
+        paginateResults(results, currentPage, itemsPerPage);
+        nextButton.disabled = currentPage === totalPages;
+        prevButton.disabled = currentPage === 1;
+      }
+    });
+
+    const nextButton = document.createElement('button');
+    nextButton.textContent = '다음';
+    nextButton.disabled = currentPage === totalPages;
+    nextButton.addEventListener('click', () => {
+      if (currentPage < totalPages) {
+        currentPage++;
+        paginateResults(results, currentPage, itemsPerPage);
+        nextButton.disabled = currentPage === totalPages;
+        prevButton.disabled = currentPage === 1;
+      }
+    });
+
+    pagination.appendChild(prevButton);
+    pagination.appendChild(nextButton);
   }
 
   document.getElementById("logout").addEventListener("click", function () {
