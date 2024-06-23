@@ -214,3 +214,52 @@ footer {
     background-color: #ccc;
     cursor: not-allowed;
 }
+
+/* 장르에만 적용되는 CSS */
+.genre-content {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: space-around;
+}
+
+.genre-section {
+    width: 100%;
+}
+
+.genre-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: space-around;
+    padding: 0;
+    list-style-type: none;
+}
+
+.genre-list .content-item {
+    flex: 0 0 calc(20% - 20px); /* 20% width with margin */
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.genre-list .content-item img {
+    width: 100%;
+    height: 160px;
+    object-fit: cover;
+    border-radius: 10px 10px 0 0;
+}
+
+.genre-list .content-item h3 {
+    margin: 10px;
+    font-size: 18px;
+}
+
+.genre-list .content-item p {
+    margin: 10px;
+    font-size: 14px;
+    color: #666;
+}
