@@ -1,6 +1,7 @@
-
 /* 노멀라이즈 시작 */
-body,ul,li {
+body,
+ul,
+li {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
@@ -46,19 +47,22 @@ header {
     position: absolute;
     top: 10px;
     right: 10px;
-  }
+}
 
 .menu-bar {
     background-color: #444;
     display: flex;
-    justify-content: center; /* 중앙 정렬 */
-    width: 100%; /* 전체 폭을 차지하게 설정 */
+    justify-content: center;
+    /* 중앙 정렬 */
+    width: 100%;
+    /* 전체 폭을 차지하게 설정 */
 }
 
 .menu-bar__menu-box-1 {
     display: flex;
     justify-content: center;
-    width: 100%; /* 전체 폭을 차지하게 설정 */
+    width: 100%;
+    /* 전체 폭을 차지하게 설정 */
 }
 
 .menu-bar__menu-box-1 ul {
@@ -68,15 +72,20 @@ header {
     display: flex;
     justify-content: center;
     background-color: #444;
-    align-items: center; /* 수직 중앙 정렬 */
-    flex-wrap: nowrap; /* 항목이 줄 바꿈되지 않도록 설정 */
-    overflow-x: auto; /* 메뉴가 화면을 넘어갈 경우 스크롤 가능하게 설정 */
+    align-items: center;
+    /* 수직 중앙 정렬 */
+    flex-wrap: nowrap;
+    /* 항목이 줄 바꿈되지 않도록 설정 */
+    overflow-x: auto;
+    /* 메뉴가 화면을 넘어갈 경우 스크롤 가능하게 설정 */
 }
 
 .menu-bar__menu-box-1 ul li {
     margin: 0 15px;
-    white-space: nowrap; /* 텍스트가 줄 바꿈되지 않도록 설정 */
-    flex: 0 0 auto; /* 항목이 고정 너비를 가지도록 설정 */
+    white-space: nowrap;
+    /* 텍스트가 줄 바꿈되지 않도록 설정 */
+    flex: 0 0 auto;
+    /* 항목이 고정 너비를 가지도록 설정 */
 }
 
 .menu-bar__menu-box-1 ul li a {
@@ -93,24 +102,29 @@ header {
     justify-content: center;
 }
 
-
 .content-section {
     display: flex;
-    justify-content: center; /* 가로 중앙 정렬 */
-    align-items: center; /* 세로 중앙 정렬 */
+    justify-content: center;
+    /* 가로 중앙 정렬 */
+    align-items: center;
+    /* 세로 중앙 정렬 */
     padding: 10px;
-    min-height: 80vh; /* 화면 높이의 80%를 차지하도록 설정 */
+    min-height: 80vh;
+    /* 화면 높이의 80%를 차지하도록 설정 */
 }
 
 .content-list {
     display: inline-grid;
-    grid-template-columns: repeat(3,1fr); /* 최소 너비 300px, 최대 가용 공간 */
-    gap: 20px; /* 아이템 사이의 간격 */
+    grid-template-columns: repeat(3, 1fr);
+    /* 최소 너비 300px, 최대 가용 공간 */
+    gap: 20px;
+    /* 아이템 사이의 간격 */
     padding: 20px;
     justify-content: center;
     align-items: start;
-    flex-wrap: nowrap; /* 항목이 줄 바꿈되지 않도록 설정 */
-    overflow-x: auto; 
+    flex-wrap: nowrap;
+    /* 항목이 줄 바꿈되지 않도록 설정 */
+    overflow-x: auto;
 }
 
 .content-item {
@@ -119,14 +133,15 @@ header {
     border-radius: 10px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 
-    width: 250px; /* 3:2 비율을 유지 */
+    width: 250px;
+    /* 3:2 비율을 유지 */
     height: 167px;
     overflow: hidden;
     cursor: pointer;
     flex-direction: column;
     align-items: left;
     justify-content: center;
-    margin:5px;
+    margin: 5px;
 }
 
 .content-item img {
@@ -145,7 +160,39 @@ header {
     margin: 10px;
     font-size: 14px;
     color: #666;
-    overflow: hidden; /* 컨텐츠가 넘칠 경우 숨기기 */
+    overflow: hidden;
+    /* 컨텐츠가 넘칠 경우 숨기기 */
+}
+
+/* recommendation 전용 css */
+#recommendations-container {
+    white-space: nowrap;
+    width: 100%;
+}
+
+#recommendations-container ul {
+    display: flex;
+    padding: 0;
+    margin: 0;
+    overflow: hidden;
+}
+
+#recommendations-container li {
+    display: flex;
+    width: calc(100% / 3);
+    /* 3개의 항목이 보이도록 설정 */
+    box-sizing: border-box;
+    text-align: left;
+}
+
+#recommendations-navigation {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+#recommendations-navigation button {
+    cursor: pointer;
 }
 
 footer {
@@ -190,6 +237,75 @@ footer {
     opacity: 0.8;
 }
 
+
+/* recommendation 전용 css */
+.recommendations {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: space-around;
+}
+
+.rcmd-section {
+    width: 100%;
+}
+
+.rcmd-list {
+    display: flex;
+    flex-direction: row;
+    gap: 50px 20px;
+    /* 아이템 사이의 간격 */
+    padding: 20px;
+    justify-content: flex-start;
+    align-items: start;
+    flex-wrap: nowrap;
+    /* 항목이 줄 바꿈되지 않도록 설정 */
+    overflow-x: auto;
+    /* 수평 스크롤 활성화 */
+    
+}
+
+.rcmd-list .content-item {
+    flex: 0 0 calc(33.33% - 40px);
+    /* 한 번에 3개를 볼 수 있도록 설정 */
+    display: flex;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+
+    width: 167pxx;
+    height: 250px;
+    cursor: pointer;
+    flex-direction: column;
+    align-items: left;
+    justify-content: center;
+    margin: 0px;
+}
+
+.rcmd-list .content-item img {
+    display:block;
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    border-radius: 10px 10px 0 0;
+}
+
+.rcmd-list .content-item h3 {
+    display:block;
+    margin: 10px;
+    font-size: 18px;
+}
+
+.rcmd-list .content-item p {
+    display:block;
+    margin: 10px;
+    font-size: 14px;
+    color: #666;
+    overflow: hidden;
+    /* 컨텐츠가 넘칠 경우 숨기기 */
+}
+
+
 /* 검색 결과에만 적용되는 CSS */
 #content-list {
     display: grid;
@@ -200,6 +316,9 @@ footer {
 }
 
 #content-list .content-item {
+    width: calc(25% - 20px);
+    /* 한 행에 4개씩 */
+    margin-bottom: 20px;
     background-color: #fff;
     border-radius: 10px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
@@ -226,6 +345,7 @@ footer {
     font-size: 14px;
     color: #666;
     text-align: center;
+    overflow: hidden;
 }
 
 #pagination {
