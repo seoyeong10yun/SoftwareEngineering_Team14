@@ -1,64 +1,58 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="ko">
-
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>OTT 추천 서비스</title>
-  <link rel="stylesheet" href="{% static 'myapp/css/style.css' %}?after">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OTT 추천 서비스</title>
+    <link rel="stylesheet" href="{% static 'myapp/css/style.css' %}?after">
 </head>
-
 <body>
-  <header>
-    <div class="search-bar">
-      <select id="search-tag">
-        <option value="genre">Genre</option>
-        <option value="director">Director</option>
-        <option value="title">Title</option>
-        <option value="cast">Cast</option>
-        <option value="country">Country</option>
-      </select>
-      <input type="text" id="search-query" placeholder="검색">
-      <button onclick="searchContent()">Search</button>
+    <header>
+        <div class="search-bar">
+            <select id="search-tag">
+                <option value="genre">Genre</option>
+                <option value="director">Director</option>
+                <option value="title">Title</option>
+                <option value="cast">Cast</option>
+                <option value="country">Country</option>
+            </select>
+            <input type="text" id="search-query" placeholder="검색">
+            <button onclick="searchContent()">Search</button>
 
-      <form id="logout_form" action="/api/logout/" method="post">
-        {% csrf_token %}
-        <input type="hidden" name="token" id="token_input">
-      </form>
-    </div>
+            <form id="logout_form" action="/api/logout/" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="token" id="token_input">
+            </form>
+        </div>
 
-    <div class="logout-button-wrapper">
-      <button id="logout">Logout</button>
-    </div>
+        <div class="logout-button-wrapper">
+            <button id="logout">Logout</button>
+        </div>
 
-    <h2 class="menu-bar con-min-width">
-      <div class="con">
-        <nav class="menu-bar__menu-box-1 text-align-center">
-          <ul class="inline-grid">
-            <li><a href="#" class="block" data-category="recommend">추천</a></li>
-            <li><a href="#" class="block" data-category="watch_history">시청기록</a></li>
-            <li><a href="#" class="block" data-category="genre">장르</a></li>
-          </ul>
-        </nav>
-      </div>
-    </h2>
-  </header>
+        <h2 class="menu-bar con-min-width">
+            <div class="con">
+                <nav class="menu-bar__menu-box-1 text-align-center">
+                    <ul class="inline-grid">
+                        <li><a href="#" class="block" data-category="recommend">추천</a></li>
+                        <li><a href="#" class="block" data-category="watch_history">시청기록</a></li>
+                        <li><a href="#" class="block" data-category="genre">장르</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </h2>
+    </header>
 
-  <script>
-    var token = "{{ token }}";
-  </script>
+    <section class="content-section">
+        <div id="recommendations" class="content-list" style="display: none;"></div>
+        <div id="watch-history" class="content-list" style="display: none;"></div>
+        <div id="genre-content" class="content-list" style="display: none;"></div>
+    </section>
 
-  <script src="{% static 'myapp/js/clickEvent.js' %}"></script>
+    <script>
+        var token = "{{ token }}";
+    </script>
 
-  <section class="content-section">
-    <div class="content-list">
-      <!-- menu-bar에서 누른 contents list 출력 -->
-      <div class="content-item">
-      </div>
-    </div>
-  </section>
-  
+    <script src="{% static 'myapp/js/clickEvent.js' %}"></script>
 </body>
-
 </html>
