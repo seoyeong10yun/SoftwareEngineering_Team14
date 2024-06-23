@@ -9,11 +9,14 @@
     <link rel="stylesheet" href="{% static 'myapp/css/style.css' %}">
 </head>
 <body>
-    <h1>Content Information</h1>
-    <div id="content-info"></div>
-    <button id="like-button">Like</button>
-    <button id="dislike-button">Dislike</button>
-    <button id="watch-button">Watch</button>
+    <div class="container">
+        <div id="content-info"></div>
+        <div class="button-section">
+            <button id="like-button" class="action-button like-button">좋아요</button>
+            <button id="dislike-button" class="action-button dislike-button">싫어요</button>
+            <button id="watch-button" class="action-button watch-button">Play Now</button>
+        </div>
+    </div>
 
     <script src="{% static 'myapp/js/contentInfoEvent.js' %}"></script>
 </body>

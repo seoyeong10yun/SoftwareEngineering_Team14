@@ -16,9 +16,12 @@ body,ul,li {
 
 .container {
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
+    max-width: 1200px;
+    margin: 20px auto;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
 header {
@@ -151,6 +154,40 @@ footer {
     padding: 10px;
     text-align: center;
     font-size: 14px;
+}
+
+.button-section {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.action-button {
+    margin: 5px;
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.like-button {
+    background-color: #000;
+    color: #fff;
+}
+
+.dislike-button {
+    background-color: #000;
+    color: #fff;
+}
+
+.watch-button {
+    background-color: #ff0000;
+    color: #fff;
+}
+
+.action-button:hover {
+    opacity: 0.8;
 }
 
 /* 검색 결과에만 적용되는 CSS */
