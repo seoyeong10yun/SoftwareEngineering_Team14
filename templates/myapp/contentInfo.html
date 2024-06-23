@@ -1,12 +1,12 @@
 {% load static %}
 
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Content Info</title>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'myapp/css/style.css' %}">
 </head>
 <body>
     <header>
@@ -14,17 +14,12 @@
             <a href="{% url 'home' %}">홈</a>
         </nav>
     </header>
+    <h1>Content Information</h1>
+    <div id="content-info"></div>
+    <button id="like-button">Like</button>
+    <button id="dislike-button">Dislike</button>
+    <button id="watch-button">Watch</button>
 
-    <main>
-        <div class="content-info">
-            <img id="content-poster" src="{{ movie.poster.url }}" alt="Content Poster">
-            <h2 id="content-title">{{ movie.title }}</h2>
-            <p id="content-description">{{ movie.description }}</p>
-            <button id="like-btn">좋아요</button>
-            <button id="dislike-btn">싫어요</button>
-        </div>
-    </main>
-
-    <script src="{% static 'js/contentInfo.js' %}"></script>
+    <script src="{% static 'myapp/js/contentInfoEvent.js' %}"></script>
 </body>
 </html>
