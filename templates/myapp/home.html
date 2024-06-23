@@ -1,65 +1,6 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="ko">
-<<<<<<< HEAD
-
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>OTT 추천 서비스</title>
-  <link rel="stylesheet" href="{% static 'myapp/css/style.css' %}?after">
-</head>
-
-<body>
-  <header>
-    <div class="search-bar">
-      <select id="search-tag">
-        <option value="genre">Genre</option>
-        <option value="director">Director</option>
-        <option value="title">Title</option>
-        <option value="cast">Cast</option>
-        <option value="country">Country</option>
-      </select>
-      <input type="text" id="search-query" placeholder="검색">
-      <button id="search-botton">Search</button>
-
-      <form id="logout_form" action="/api/logout/" method="post">
-        {% csrf_token %}
-        <input type="hidden" name="token" id="token_input">
-      </form>
-    </div>
-
-    <div class="logout-button-wrapper">
-      <button id="logout">Logout</button>
-    </div>
-
-    <h2 class="menu-bar">
-      <div class="con">
-        <nav class="menu-bar__menu-box-1 text-align-center">
-          <ul class="inline-grid">
-            <li><a href="#" class="block" data-category="recommend">추천</a></li>
-            <li><a href="#" class="block" data-category="watch_history">시청기록</a></li>
-            <li><a href="#" class="block" data-category="genre">장르</a></li>
-          </ul>
-        </nav>
-      </div>
-    </h2>
-  </header>
-
-  <script>
-    var token = "{{ token }}";
-  </script>
-
-  <script src="{% static 'myapp/js/clickEvent.js' %}"></script>
-
-  <section class="content-section">
-    <div id="recommendations" class="content-list" style="display: none;"></div>
-    <div id="watch-history" class="content-list" style="display: none;"></div>
-    <div id="genre-content" class="content-list" style="display: none;"></div>
-    <div id="content-list" class="content-list" style="display: none;"></div>
-  </section>
-
-=======
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -109,12 +50,13 @@
         <div id="content-list" class="content-list" style="display: none;"></div>
     </section>
 
+    <div id="pagination" style="display: none;"></div>
+
     <script>
         var token = "{{ token }}";
     </script>
 
     <script src="{% static 'myapp/js/clickEvent.js' %}"></script>
->>>>>>> 9037441c81907a7142d984d801c278c0c3563427
 </body>
 
 </html>
