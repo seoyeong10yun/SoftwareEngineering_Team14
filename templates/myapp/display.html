@@ -1,49 +1,357 @@
-{% load static %}
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OTT 추천 서비스</title>
-    <link rel="stylesheet" href="{% static 'myapp/css/style.css' %}?after">
+    <title>Home</title>
 </head>
 <body>
-    <header>
-      <div class="search-bar">
-        <select id="search-tag">
-          <option value="genre">Genre</option>
-          <option value="director">Director</option>
-          <option value="title">Title</option>
-          <option value="cast">Cast</option>
-          <option value="country">Country</option>
-        </select>
-        <input type="text" id="search-query" placeholder="검색">
-        <button onclick="searchContent()">Search</button>
-      </div>
+    <h1>Welcome to Home</h1>
 
-      <h2 class="menu-bar con-min-width">
-        <div class="con">
-          <nav class="menu-bar__menu-box-1 text-align-center">
-            <ul class="inline-grid">
-              <li><a href="#" class="block">추천</a></li>
-              <li><a href="#" class="block">시청기록</a></li>
-              <li><a href="#" class="block">장르</a></li>
-            </ul>
-          </nav>
-        </div>
-      </h2>
+    <h2>Search Content</h2>
+    <select id="search-tag">
+        <option value="genre">Genre</option>
+        <option value="director">Director</option>
+        <option value="title">Title</option>
+        <option value="cast">Cast</option>
+        <option value="country">Country</option>
+    </select>
+    <input type="text" id="search-query" placeholder="Enter search query">
+    <button onclick="searchContent()">Search</button>
 
-    </header>
+    <h2>Content List</h2>
+    <ul id="content-list"></ul>
+    <button id="prev-page" disabled>Previous</button>
+    <button id="next-page" disabled>Next</button>
+    
+    <h2>Recommended Content</h2>
+    <div id="recommendations">
+        <h3>You liked similar genre</h3>
+        <ul id="liked-genre"></ul>
+        <h3>You liked similar cast</h3>
+        <ul id="liked-cast"></ul>
+        <h3>You liked similar director</h3>
+        <ul id="liked-director"></ul>
+        <h3>Similar genre to watched content</h3>
+        <ul id="watched-genre"></ul>
+        <h3>Similar cast to watched content</h3>
+        <ul id="watched-cast"></ul>
+        <h3>Same director as watched content</h3>
+        <ul id="watched-director"></ul>
+    </div>
 
-    <main>
-        <section class="content-section">
-            <div class="content-list">
-              <div class="content-item">
-              </div>
-            </div>
-          </section>
-    </main>
+    <h2>Content by Genre</h2>
+    <select id="genre-select">
+        <!-- 장르 옵션들 -->
+        <option value="Dramas">Dramas</option>
+        <option value="Independent Movies">Independent Movies</option>
+        <option value="International Movies">International Movies</option>
+        <option value="British TV Shows">British TV Shows</option>
+        <option value="Reality TV">Reality TV</option>
+        <option value="Comedies">Comedies</option>
+        <option value="Romantic Movies">Romantic Movies</option>
+        <option value="Horror Movies">Horror Movies</option>
+        <option value="Sci-Fi & Fantasy">Sci-Fi & Fantasy</option>
+        <option value="Thrillers">Thrillers</option>
+        <option value="Action & Adventure">Action & Adventure</option>
+        <option value="Classic Movies">Classic Movies</option>
+        <option value="Anime Features">Anime Features</option>
+        <option value="Children & Family Movies">Children & Family Movies</option>
+        <option value="Documentaries">Documentaries</option>
+        <option value="Music & Musicals">Music & Musicals</option>
+        <option value="Cult Movies">Cult Movies</option>
+        <option value="Faith & Spirituality">Faith & Spirituality</option>
+        <option value="LGBTQ Movies">LGBTQ Movies</option>
+        <option value="Crime TV Shows">Crime TV Shows</option>
+        <option value="International TV Shows">International TV Shows</option>
+        <option value="TV Dramas">TV Dramas</option>
+        <option value="Romantic TV Shows">Romantic TV Shows</option>
+        <option value="Spanish-Language TV Shows">Spanish-Language TV Shows</option>
+        <option value="Stand-Up Comedy">Stand-Up Comedy</option>
+        <option value="TV Shows">TV Shows</option>
+        <option value="Movies">Movies</option>
+        <option value="TV Comedies">TV Comedies</option>
+        <option value="Sports Movies">Sports Movies</option>
+        <option value="TV Action & Adventure">TV Action & Adventure</option>
+        <option value="TV Sci-Fi & Fantasy">TV Sci-Fi & Fantasy</option>
+        <option value="TV Mysteries">TV Mysteries</option>
+        <option value="Docuseries">Docuseries</option>
+        <option value="Anime Series">Anime Series</option>
+        <option value="TV Horror">TV Horror</option>
+        <option value="Teen TV Shows">Teen TV Shows</option>
+        <option value="Korean TV Shows">Korean TV Shows</option>
+        <option value="Stand-Up Comedy & Talk Shows">Stand-Up Comedy & Talk Shows</option>
+        <option value="Kids' TV">Kids' TV</option>
+        <option value="Classic & Cult TV">Classic & Cult TV</option>
+        <option value="TV Thrillers">TV Thrillers</option>
+        <option value="Science & Nature TV">Science & Nature TV</option>
+    </select>
+    <button onclick="loadGenreContent()">Load Genre Content</button>
+    <ul id="genre-content-list"></ul>
+    <button id="prev-genre-page" disabled>Previous</button>
+    <button id="next-genre-page" disabled>Next</button>
 
-    <script src="{% static 'myapp/js/clickEvent.js' %}"></script>
+    <h2>Your Watch History</h2>
+    <ul id="watch-history"></ul>
+
+    <form id="logout_form" action="/api/logout/" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="token" id="token_input">
+    </form>
+
+    <button id="logout">Logout</button>
+    <script>
+        const token = localStorage.getItem('token');
+        let currentPage = 1;
+        let currentGenrePage = 1;
+        let currentGenre = '';
+
+        function loadRecommendedContent() {
+            fetch('/api/recommend/', {
+                headers: {
+                    'Authorization': `Token ${token}`,
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                const likedGenre = document.getElementById('liked-genre');
+                const likedCast = document.getElementById('liked-cast');
+                const likedDirector = document.getElementById('liked-director');
+                const watchedGenre = document.getElementById('watched-genre');
+                const watchedCast = document.getElementById('watched-cast');
+                const watchedDirector = document.getElementById('watched-director');
+
+                likedGenre.innerHTML = ''; // Clear existing content
+                likedCast.innerHTML = ''; // Clear existing content
+                likedDirector.innerHTML = ''; // Clear existing content
+                watchedGenre.innerHTML = ''; // Clear existing content
+                watchedCast.innerHTML = ''; // Clear existing content
+                watchedDirector.innerHTML = ''; // Clear existing content
+
+                if (!data.liked_content_exists) {
+                    likedGenre.innerHTML = '<li>No liked content available</li>';
+                    likedCast.innerHTML = '<li>No liked content available</li>';
+                    likedDirector.innerHTML = '<li>No liked content available</li>';
+                } else {
+                    data.liked_genre.forEach(item => {
+                        const li = document.createElement('li');
+                        li.textContent = item.title;
+                        li.onclick = () => window.location.href = `/content/${item.id}/`;
+                        likedGenre.appendChild(li);
+                    });
+
+                    data.liked_cast.forEach(item => {
+                        const li = document.createElement('li');
+                        li.textContent = item.title;
+                        li.onclick = () => window.location.href = `/content/${item.id}/`;
+                        likedCast.appendChild(li);
+                    });
+
+                    data.liked_director.forEach(item => {
+                        const li = document.createElement('li');
+                        li.textContent = item.title;
+                        li.onclick = () => window.location.href = `/content/${item.id}/`;
+                        likedDirector.appendChild(li);
+                    });
+                }
+
+                if (!data.watch_history_exists) {
+                    watchedGenre.innerHTML = '<li>No watch history available</li>';
+                    watchedCast.innerHTML = '<li>No watch history available</li>';
+                    watchedDirector.innerHTML = '<li>No watch history available</li>';
+                } else {
+                    data.watched_genre.forEach(item => {
+                        const li = document.createElement('li');
+                        li.textContent = item.title;
+                        li.onclick = () => window.location.href = `/content/${item.id}/`;
+                        watchedGenre.appendChild(li);
+                    });
+                    data.watched_cast.forEach(item => {
+                        const li = document.createElement('li');
+                        li.textContent = item.title;
+                        li.onclick = () => window.location.href = `/content/${item.id}/`;
+                        watchedCast.appendChild(li);
+                    });
+
+                    data.watched_director.forEach(item => {
+                        const li = document.createElement('li');
+                        li.textContent = item.title;
+                        li.onclick = () => window.location.href = `/content/${item.id}/`;
+                        watchedDirector.appendChild(li);
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error loading recommended content:', error);
+            });
+        }
+
+        function loadContentList(page) {
+            fetch(`/api/content_list/?page=${page}`, {
+                headers: {
+                    'Authorization': `Token ${token}`,
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                const contentList = document.getElementById('content-list');
+                contentList.innerHTML = ''; // Clear existing content
+                data.results.forEach(content => {
+                    const li = document.createElement('li');
+                    li.textContent = content.title;
+                    li.onclick = () => window.location.href = `/content/${content.id}/`;
+                    contentList.appendChild(li);
+                });
+
+                document.getElementById('prev-page').disabled = !data.previous;
+                document.getElementById('next-page').disabled = !data.next;
+            });
+        }
+
+        function loadGenreContent(page = 1) {
+            const genre = document.getElementById('genre-select').value;
+            currentGenre = genre;
+
+            fetch(`/api/genre/${genre}/?page=${page}`, {
+                headers: {
+                    'Authorization': `Token ${token}`,
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                const genreContentList = document.getElementById('genre-content-list');
+                genreContentList.innerHTML = ''; // Clear existing content
+                data.results.forEach(content => {
+                    const li = document.createElement('li');
+                    li.textContent = content.title;
+                    li.onclick = () => window.location.href = `/content/${content.id}/`;
+                    genreContentList.appendChild(li);
+                });
+
+                document.getElementById('prev-genre-page').disabled = !data.previous;
+                document.getElementById('next-genre-page').disabled = !data.next;
+            })
+            .catch(error => {
+                console.error('Error loading genre content:', error);
+            });
+        }
+
+        document.getElementById('prev-genre-page').onclick = () => {
+            if (currentGenrePage > 1) {
+                currentGenrePage--;
+                loadGenreContent(currentGenrePage);
+            }
+        };
+
+        document.getElementById('next-genre-page').onclick = () => {
+            currentGenrePage++;
+            loadGenreContent(currentGenrePage);
+        };
+
+        document.getElementById('prev-page').onclick = () => {
+            if (currentPage > 1) {
+                currentPage--;
+                loadContentList(currentPage);
+            }
+        };
+
+        document.getElementById('next-page').onclick = () => {
+            currentPage++;
+            loadContentList(currentPage);
+        };
+
+        function loadWatchHistory() {
+            fetch('/api/watch_history/', {
+                headers: {
+                    'Authorization': `Token ${token}`,
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                const watchHistory = document.getElementById('watch-history');
+                watchHistory.innerHTML = ''; // Clear existing content
+                data.forEach(record => {
+                    const li = document.createElement('li');
+                    li.textContent = `${record.content.title} - Watched on: ${new Date(record.watch_date).toLocaleDateString()}`;
+                    watchHistory.appendChild(li);
+                });
+            });
+        }
+
+        function searchContent() {
+            const tag = document.getElementById('search-tag').value;
+            const query = document.getElementById('search-query').value;
+
+            fetch(`/api/search/?tag=${tag}&query=${query}`, {
+                headers: {
+                    'Authorization': `Token ${token}`,
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                const contentList = document.getElementById('content-list');
+                contentList.innerHTML = ''; // Clear existing content
+                data.forEach(content => {
+                    const li = document.createElement('li');
+                    li.textContent = content.title;
+                    li.onclick = () => window.location.href = `/content/${content.id}/`;
+                    contentList.appendChild(li);
+                });
+            })
+            .catch(error => {
+                console.error('Error searching content:', error);
+            });
+        }
+
+        // Initial load
+        loadRecommendedContent();
+        loadContentList(currentPage);
+        loadWatchHistory();
+
+        // Logout
+        document.getElementById("logout").addEventListener("click", function() {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                alert('로그인되지 않았습니다.');
+                return;
+            }
+
+            fetch('/api/logout/', {
+                method: 'POST',
+                headers: {
+                    'Authorization': 'Token ' + token,
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')  // CSRF 토큰 설정
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    localStorage.removeItem('token');
+                    window.location.href = '/login/';
+                } else {
+                    alert('로그아웃에 실패했습니다. 다시 시도해주세요.');
+                }
+            })
+            .catch(error => {
+                console.error('로그아웃 요청 중 에러 발생:', error);
+                alert('로그아웃에 실패했습니다. 다시 시도해주세요.');
+            });
+        });
+
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+    </script>
 </body>
 </html>
