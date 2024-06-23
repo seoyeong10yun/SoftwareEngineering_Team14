@@ -17,9 +17,12 @@ li {
 
 .container {
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
+    max-width: 1200px;
+    margin: 20px auto;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
 header {
@@ -200,10 +203,113 @@ footer {
     font-size: 14px;
 }
 
-/* 검색 결과에만 적용되는 CSS */
-#content-list {
+.button-section {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.action-button {
+    margin: 5px;
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.like-button {
+    background-color: #000;
+    color: #fff;
+}
+
+.dislike-button {
+    background-color: #000;
+    color: #fff;
+}
+
+.watch-button {
+    background-color: #ff0000;
+    color: #fff;
+}
+
+.action-button:hover {
+    opacity: 0.8;
+}
+
+
+/* recommendation 전용 css */
+.recommendations {
     display: flex;
     flex-wrap: wrap;
+    gap: 10px;
+    justify-content: space-around;
+}
+
+.rcmd-section {
+    width: 100%;
+}
+
+.rcmd-list {
+    display: flex;
+    flex-direction: row;
+    gap: 50px 20px;
+    /* 아이템 사이의 간격 */
+    padding: 20px;
+    justify-content: flex-start;
+    align-items: start;
+    flex-wrap: nowrap;
+    /* 항목이 줄 바꿈되지 않도록 설정 */
+    overflow-x: auto;
+    /* 수평 스크롤 활성화 */
+    
+}
+
+.rcmd-list .content-item {
+    flex: 0 0 calc(33.33% - 40px);
+    /* 한 번에 3개를 볼 수 있도록 설정 */
+    display: flex;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+
+    width: 167pxx;
+    height: 250px;
+    cursor: pointer;
+    flex-direction: column;
+    align-items: left;
+    justify-content: center;
+    margin: 0px;
+}
+
+.rcmd-list .content-item img {
+    display:block;
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    border-radius: 10px 10px 0 0;
+}
+
+.rcmd-list .content-item h3 {
+    display:block;
+    margin: 10px;
+    font-size: 18px;
+}
+
+.rcmd-list .content-item p {
+    display:block;
+    margin: 10px;
+    font-size: 14px;
+    color: #666;
+    overflow: hidden;
+    /* 컨텐츠가 넘칠 경우 숨기기 */
+}
+
+
+/* 검색 결과에만 적용되는 CSS */
+#content-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* 한 행에 4개씩 */
     gap: 20px;
     justify-content: center;
     margin-top: 20px;
