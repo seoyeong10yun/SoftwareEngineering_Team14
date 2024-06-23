@@ -44,6 +44,10 @@ document.addEventListener('DOMContentLoaded', function () {
         } else if (category === 'watch_history') {
           updateWatchHistoryList(data);
         } // 추가 카테고리 작업은 여기에 추가
+
+        const pagination = document.getElementById('pagination');
+        pagination.style.display = 'none';
+
       })
       .catch(error => {
         console.error('Error loading content:', error);
@@ -208,34 +212,87 @@ document.addEventListener('DOMContentLoaded', function () {
     const query = document.getElementById('search-query').value;
 
     fetch(`/api/search/?tag=${tag}&query=${query}`, {
-      headers: {
-        'Authorization': `Token ${token}`,
-      }
+        headers: {
+            'Authorization': `Token ${token}`,
+        }
     })
-      .then(response => response.json())
-      .then(data => {
+    .then(response => response.json())
+    .then(data => {
         console.log("검색 결과:", data); // 디버깅을 위해 추가
         hideAllContent(); // 이전 내용을 숨깁니다
         const contentList = document.getElementById('content-list');
         contentList.style.display = 'block';
         contentList.innerHTML = ''; // 기존 내용을 지웁니다
 
-        data.forEach(content => {
-            const contentItem = document.createElement('div');
-            contentItem.className = 'content-item';
-            contentItem.innerHTML = `
-                <img class="poster" src="${content.poster || ''}" alt="포스터">
-                <h3>${content.title}</h3>
-                <p>${content.description}</p>
-            `;
-            contentItem.onclick = () => window.location.href = `/content/${content.id}/`;
-            contentList.appendChild(contentItem);
-        });
-      })
-      .catch(error => {
+        if (data.length === 0) {
+            contentList.innerHTML = '<p>검색 결과가 없습니다.</p>';
+            return;
+        }
+
+        paginateResults(data, 1, 12); // 초기 페이지 로드를 위해 호출
+
+        createPagination(data, 12); // 페이징 버튼 생성
+    })
+    .catch(error => {
         console.error('Error searching content:', error);
-      });
-  }
+    });
+}
+
+function paginateResults(results, page, itemsPerPage) {
+    const contentList = document.getElementById('content-list');
+    contentList.innerHTML = ''; // 기존 내용을 지웁니다
+
+    const start = (page - 1) * itemsPerPage;
+    const end = start + itemsPerPage;
+    const paginatedItems = results.slice(start, end);
+
+    paginatedItems.forEach(content => {
+        const contentItem = document.createElement('div');
+        contentItem.className = 'content-item';
+        contentItem.innerHTML = `
+            <h3>${content.title}</h3>
+            <p>${content.description}</p>
+        `;
+        contentItem.onclick = () => window.location.href = `/content/${content.id}/`;
+        contentList.appendChild(contentItem);
+    });
+}
+
+function createPagination(results, itemsPerPage) {
+    const pagination = document.getElementById('pagination');
+    pagination.style.display = 'block';
+    pagination.innerHTML = '';
+
+    let currentPage = 1;
+    const totalPages = Math.ceil(results.length / itemsPerPage);
+
+    const prevButton = document.createElement('button');
+    prevButton.textContent = '이전';
+    prevButton.disabled = currentPage === 1;
+    prevButton.addEventListener('click', () => {
+        if (currentPage > 1) {
+            currentPage--;
+            paginateResults(results, currentPage, itemsPerPage);
+            nextButton.disabled = currentPage === totalPages;
+            prevButton.disabled = currentPage === 1;
+        }
+    });
+
+    const nextButton = document.createElement('button');
+    nextButton.textContent = '다음';
+    nextButton.disabled = currentPage === totalPages;
+    nextButton.addEventListener('click', () => {
+        if (currentPage < totalPages) {
+            currentPage++;
+            paginateResults(results, currentPage, itemsPerPage);
+            nextButton.disabled = currentPage === totalPages;
+            prevButton.disabled = currentPage === 1;
+        }
+    });
+
+    pagination.appendChild(prevButton);
+    pagination.appendChild(nextButton);
+}
 
   document.getElementById("logout").addEventListener("click", function () {
     if (!token) {
@@ -280,5 +337,5 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   // 초기 로드: 추천 콘텐츠를 로드
-  loadContent('recommend', token);
+  loadContentList('recommend', token);
 });
