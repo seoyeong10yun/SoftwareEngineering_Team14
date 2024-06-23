@@ -6,9 +6,6 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   const menuItems = document.querySelectorAll('.menu-bar__menu-box-1 a');
-  let currentPage = 1;
-  let currentGenrePage = 1;
-  let currentGenre = '';
 
   menuItems.forEach(item => {
       item.addEventListener('click', function (event) {
@@ -54,6 +51,7 @@ document.addEventListener('DOMContentLoaded', function () {
       const recommendations = document.getElementById('recommendations');
       const watchHistory = document.getElementById('watch-history');
       const genreContent = document.getElementById('genre-content');
+      const searchContent = document.getElementById('content-list');
 
       if (recommendations) {
           recommendations.innerHTML = '';
@@ -64,12 +62,17 @@ document.addEventListener('DOMContentLoaded', function () {
       if (genreContent) {
           genreContent.innerHTML = '';
       }
+      if (searchContent) {
+        genreContent.innerHTML = '';      
+      }
   }
 
   function hideAllContent() {
       const recommendations = document.getElementById('recommendations');
       const watchHistory = document.getElementById('watch-history');
       const genreContent = document.getElementById('genre-content');
+      const searchContent = document.getElementById('content-list');
+
 
       if (recommendations) {
           recommendations.style.display = 'none';
@@ -79,6 +82,9 @@ document.addEventListener('DOMContentLoaded', function () {
       }
       if (genreContent) {
           genreContent.style.display = 'none';
+      }
+      if (searchContent) {
+        searchContent.style.display = 'none';
       }
   }
 
@@ -190,7 +196,13 @@ document.addEventListener('DOMContentLoaded', function () {
       }
   }
 
-  function searchContent() {
+  const searchButton = document.getElementById('search-button');
+    searchButton.addEventListener('click', function () {
+        searchContent(token);
+    });
+
+    function searchContent(token) {
+      console.log("searchContent 함수 호출됨"); // 디버깅을 위해 추가
       const tag = document.getElementById('search-tag').value;
       const query = document.getElementById('search-query').value;
 
@@ -201,16 +213,23 @@ document.addEventListener('DOMContentLoaded', function () {
       })
       .then(response => response.json())
       .then(data => {
-          const contentList = document.querySelector('.content-list');
-          if (contentList) {
-              contentList.innerHTML = ''; // Clear existing content
-              data.forEach(content => {
-                  const li = document.createElement('li');
-                  li.textContent = content.title;
-                  li.onclick = () => window.location.href = `/content/${content.id}/`;
-                  contentList.appendChild(li);
-              });
-          }
+          console.log("검색 결과:", data); // 디버깅을 위해 추가
+          hideAllContent(); // 이전 내용을 숨깁니다
+          const contentList = document.getElementById('content-list');
+          contentList.style.display = 'block';
+          contentList.innerHTML = ''; // 기존 내용을 지웁니다
+
+          data.forEach(content => {
+              const contentItem = document.createElement('div');
+              contentItem.className = 'content-item';
+              contentItem.innerHTML = `
+                  <img class="poster" src="${content.poster || ''}" alt="포스터">
+                  <h3>${content.title}</h3>
+                  <p>${content.description}</p>
+              `;
+              contentItem.onclick = () => window.location.href = `/content/${content.id}/`;
+              contentList.appendChild(contentItem);
+          });
       })
       .catch(error => {
           console.error('Error searching content:', error);

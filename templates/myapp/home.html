@@ -18,7 +18,7 @@
                 <option value="country">Country</option>
             </select>
             <input type="text" id="search-query" placeholder="검색">
-            <button onclick="searchContent()">Search</button>
+            <button id="search-button">Search</button>
 
             <form id="logout_form" action="/api/logout/" method="post">
                 {% csrf_token %}
@@ -47,6 +47,7 @@
         <div id="recommendations" class="content-list" style="display: none;"></div>
         <div id="watch-history" class="content-list" style="display: none;"></div>
         <div id="genre-content" class="content-list" style="display: none;"></div>
+        <div id="content-list" class="content-list" style="display: none;"></div>
     </section>
 
     <script>
