@@ -123,11 +123,15 @@ document.addEventListener('DOMContentLoaded', function () {
         likedDirector.innerHTML = '<li>No liked content available</li>';
       } else {
         data.liked_genre.forEach(item => {
-          const li = document.createElement('li');
+          const itemsToDisplay = data.liked_genre.results.slice(0, 9); // 최대 9개의 아이템만 처리
+          const li = document.createElement('div');
           li.className = 'content-item';
-          li.textContent = item.title;
+          li.innerHTML = `
+          <img class="poster" src="${item.poster}" alt="포스터">
+          <h3>${item.title}</h3>
+          <p>${item.description}</p>`;
           li.onclick = () => window.location.href = `/content/${item.id}/`;
-          likedGenre.appendChild(li);
+          likedGenre.lastChild.appendChild(li);
         });
 
         data.liked_cast.forEach(item => {
@@ -280,5 +284,5 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   // 초기 로드: 추천 콘텐츠를 로드
-  loadContent('recommend', token);
+  loadContentList('recommend', token);
 });
