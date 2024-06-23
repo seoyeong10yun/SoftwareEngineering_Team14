@@ -314,11 +314,7 @@ footer {
     justify-content: center;
     margin-top: 20px;
 }
-
 #content-list .content-item {
-    width: calc(25% - 20px);
-    /* 한 행에 4개씩 */
-    margin-bottom: 20px;
     background-color: #fff;
     border-radius: 10px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
@@ -326,34 +322,28 @@ footer {
     padding: 10px;
     text-align: center;
 }
-
 #content-list .content-item img {
     width: 100%;
     height: 160px;
     object-fit: cover;
     border-radius: 10px 10px 0 0;
 }
-
 #content-list .content-item h3 {
     margin: 10px 0;
     font-size: 18px;
     text-align: center;
 }
-
 #content-list .content-item p {
     margin: 0;
     font-size: 14px;
     color: #666;
     text-align: center;
-    overflow: hidden;
 }
-
 #pagination {
     display: flex;
     justify-content: center;
     margin: 20px 0;
 }
-
 #pagination button {
     margin: 0 5px;
     padding: 10px 20px;
@@ -364,7 +354,6 @@ footer {
     color: #fff;
     cursor: pointer;
 }
-
 #pagination button:disabled {
     background-color: #ccc;
     cursor: not-allowed;
