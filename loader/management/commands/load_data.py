@@ -9,7 +9,7 @@ class Command(BaseCommand):
     help = 'Load data from netflix_titles.csv into Content model'
 
     def handle(self, *args, **kwargs):
-        with open('/Users/jiho/Desktop/netflix_titles.csv', newline='', encoding='utf-8') as csvfile:
+        with open('C:/Users/rkwor/Downloads/archive/netflix_titles.csv', newline='', encoding='utf-8') as csvfile:
             reader = csv.DictReader(csvfile)
             for row in reader:
                 content, created = Content.objects.get_or_create(
