@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function () {
   const token = localStorage.getItem('token'); // loadContent 함수 내에서 토큰을 가져옴
-  const menuItems = document.querySelectorAll('.menu-bar__menu-box-1 ul li a');
+  const menuItems = document.querySelectorAll('.menu-bar__menu-box-1 a');
   const sections = document.querySelectorAll('.content-list');
 
   menuItems.forEach(item => {
