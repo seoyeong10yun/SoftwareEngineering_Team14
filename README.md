@@ -9,3 +9,9 @@
     3. 특정 콘텐츠에 대한 정보(장르, 국가, 출연진, 시놉시스)를 사용자에게 보여주는 기능도 제공한다.
   
   사용자 경험 기반의 추천을 통해, 사용자들이 원하는 콘텐츠를 쉽게 찾을 수 있기 때문에 만족도가 높아질 것이다. 또한 추천 알고리즘을 통해 흥미로운 콘텐츠를 발견한 사용자들은 더 많은 콘텐츠를 소비하게 될 것이다.
+
+## System Requirements Specification
+[System Requirements Specification.pdf](https://github.com/user-attachments/files/16928078/System.Requirements.Specification.pdf)
+
+## Software Design Document
+[Software Design Document_team14.pdf](https://github.com/user-attachments/files/16928081/Software.Design.Document_team14.pdf)
