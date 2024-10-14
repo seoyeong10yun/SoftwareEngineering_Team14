@@ -15,3 +15,27 @@
 
 ## Software Design Document
 [Software Design Document_team14.pdf](https://github.com/user-attachments/files/16928081/Software.Design.Document_team14.pdf)
+
+## Web Server Workflow
+<img width="725" alt="image" src="https://github.com/user-attachments/assets/684a85cc-c88a-450b-a810-fc5024f3f179">
+
+## UseCase Diagram
+![image](https://github.com/user-attachments/assets/15b4da95-a62c-493b-8d64-f80d737854f1)
+
+> #### 이외의 각 항목별 시스템 요구사항, 시퀀스 및 클래스 다이어그램 등의 정보는 상단의 SRS, SDD를 참고 바랍니다.
+
+## 구현 사진
+#### 로그인
+![image](https://github.com/user-attachments/assets/8696d9ba-062b-4637-9805-f4621bd2ad4f)
+
+#### 추천 페이지
+![image](https://github.com/user-attachments/assets/fcbfb4ac-a46e-44f1-8163-ac6daf5b114e)
+
+### 상세 정보
+![image](https://github.com/user-attachments/assets/749a5453-8821-431b-b3b2-d0ac0227eac8)
+
+#### 시청 기록
+![image](https://github.com/user-attachments/assets/b0c610e6-9ce2-4c28-ba16-f0485bc49163)
+
+#### 장르별 콘텐츠
+![image](https://github.com/user-attachments/assets/c223fb53-24b2-4f0d-94d9-d028821fb80b)
