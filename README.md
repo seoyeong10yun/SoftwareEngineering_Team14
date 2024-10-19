@@ -1,5 +1,5 @@
 # SoftwareEngineering_Team14
-경북대학교 소프트웨어공학 팀프로젝트 14조
+> # 경북대학교 소프트웨어 공학 팀프로젝트 14조
 
 ## OTT contents recommender system
   “OTT 영상 추천 시스템”은 OTT 콘텐츠를 자주 시청하는 사용자가 해당 플랫폼 내에서 최적화된 콘텐츠를 찾고 소비할 수 있도록 지원한다.
