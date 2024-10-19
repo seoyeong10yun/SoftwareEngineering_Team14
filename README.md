@@ -10,6 +10,24 @@
   
   사용자 경험 기반의 추천을 통해, 사용자들이 원하는 콘텐츠를 쉽게 찾을 수 있기 때문에 만족도가 높아질 것이다. 또한 추천 알고리즘을 통해 흥미로운 콘텐츠를 발견한 사용자들은 더 많은 콘텐츠를 소비하게 될 것이다.
 
+## 팀원 소개
+<table>
+<tbody>
+    <td align="center">
+        <img src="https://avatars.githubusercontent.com/u/39462646?v=4" alt="김성덕" border="0" width="100px;" alt=""/></a>
+        <br /><sub><b>김성덕 - BE</b></sub>
+    </td>
+    <td align="center">
+        <img src="https://avatars.githubusercontent.com/u/161289673?v=4" alt="이지호" border="0" width="100px;" alt=""/></a>
+        <br /><sub><b>이지호 - BE</b></sub>
+    </td>
+    <td align="center">
+        <img src="https://avatars.githubusercontent.com/u/89364960?v=4" alt="윤서영" border="0" width="100px;" /></a>
+        <br /><sub><b>윤서영 - FE</b></sub>
+    </td>
+</tbody>
+</table>
+
 ## System Requirements Specification
 [System Requirements Specification.pdf](https://github.com/user-attachments/files/16928078/System.Requirements.Specification.pdf)
 
